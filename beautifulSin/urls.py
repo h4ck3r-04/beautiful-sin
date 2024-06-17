@@ -19,6 +19,7 @@ from django.urls import path
 from dashboard import views
 
 urlpatterns = [
+    path('search/', views.search_view, name='search'),
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),
 ]
