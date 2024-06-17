@@ -8,6 +8,7 @@
   <title>Beautiful Sin</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
   <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/search.css' %}">
   {% block styles %}
   {% endblock %}
 </head>
@@ -29,9 +30,18 @@
     {% block content %}
     {% endblock %}
   </div>
+
+  <div class="search-overlay" id="search-overlay">
+    <div class="search-bar">
+      <input type="text" id="search-input" placeholder="Search..." autocomplete="off">
+      <ul id="search-results"></ul>
+    </div>
+  </div>
 </body>
+
 <script src="{% static 'js/sidebar.js' %}"></script>
 <script src="{% static 'js/sidebarLink.js' %}"></script>
+<script src="{% static 'js/search.js' %}"></script>
 {% block scripts %}
 {% endblock %}
 </html>
