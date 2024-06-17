@@ -21,5 +21,12 @@ from dashboard import views
 urlpatterns = [
     path('search/', views.search_view, name='search'),
     path('admin/', admin.site.urls),
-    path('', views.index, name='index'),
+    path('', views.index, name='home'),
+    path('browser-exploitation', views.browser_exploitation, name='browser-exploitation'),
+    path('web-security', views.web_security, name='web-security'),
+    path('system-security', views.system_security, name='system-security'),
+    path('mobile-security', views.mobile_security, name='mobile-security'),
+    path('forensics', views.forensics, name='forensics'),
+    path('social-engineering', views.social_engineering, name='social-engineering'),
+    path('settings', views.settings, name='settings')
 ]
