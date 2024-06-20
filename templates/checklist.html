@@ -2,36 +2,70 @@
 {% load static %}
 
 {% block styles %}
-<link rel="stylesheet" type="text/css" href="{% static 'css/common.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'css/checklist.css' %}">
+<style>
+  .header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .notes-textarea {
+    width: 100%;
+    margin-top: 10px;
+  }
+  .download-btn {
+    margin-top: 10px;
+  }
+  .download-btn i {
+    margin-right: 5px;
+  }
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="container">
   <h1>CheckList</h1>
   <ul class="nav nav-tabs">
-    <li class="active"><a data-toggle="tab" href="#home">Local Windows Privilege Escalation</a></li>
-    <li><a data-toggle="tab" href="#menu1">Android APK</a></li>
-    <li><a data-toggle="tab" href="#menu2">IOS Pentesting</a></li>
-    <li><a data-toggle="tab" href="#menu3">Linux Privilege Escalation</a></li>
+    {% for tab in tabs %}
+      <li class="{% if forloop.first %}active{% endif %}"><a data-toggle="tab" href="#{{ tab.id }}">{{ tab.title }}</a></li>
+    {% endfor %}
   </ul>
   <div class="tab-content">
-    <div id="home" class="tab-pane fade in active">
-      <h3>Local Windows Privilege Escalation</h3>
-    </div>
-    <div id="menu1" class="tab-pane fade">
-      <h3>Android APK</h3>
-    </div>
-    <div id="menu2" class="tab-pane fade">
-      <h3>IOS Pentesting</h3>
-    </div>
-    <div id="menu3" class="tab-pane fade">
-      <h3>Linux Privilege Escalation</h3>
-    </div>
+    {% for tab in tabs %}
+      <div id="{{ tab.id }}" class="tab-pane fade {% if forloop.first %}in active{% endif %}">
+        <div class="header-row">
+          <h3>{{ tab.title }}</h3>
+          <button class="btn btn-primary download-btn" data-tab-id="{{ tab.id }}"><i class="ti ti-download"></i>Download Progress</button>
+        </div>
+        <p>{{ tab.content }}</p>
+        <textarea class="notes-textarea" placeholder="Enter your notes here..."></textarea>
+      </div>
+    {% endfor %}
   </div>
-</div>
 {% endblock %}
 
 {% block scripts %}
 <script src="{% static 'js/checklist.js' %}"></script>
+<script>
+  document.querySelectorAll('.download-btn').forEach(function(button) {
+    button.addEventListener('click', function() {
+      let tabId = this.getAttribute('data-tab-id');
+      let tab = document.getElementById(tabId);
+      let title = tab.querySelector('h3').innerText;
+      let content = tab.querySelector('p').innerText;
+      let notes = tab.querySelector('.notes-textarea').value;
+
+      let checklistData = {title: title, content: content, notes: notes};
+      let json = JSON.stringify(checklistData, null, 2);
+      let blob = new Blob([json], {type: "application/json"});
+      let url = URL.createObjectURL(blob);
+
+      let a = document.createElement('a');
+      a.href = url;
+      a.download = title.replace(/\s+/g, '_') + '_progress.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    });
+  });
+</script>
 {% endblock %}

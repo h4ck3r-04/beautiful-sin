@@ -45,7 +45,13 @@ def social_engineering(request):
   return render(request, 'social-engineering.html')
 
 def checklist(request):
-  return render(request, 'checklist.html')
+  tabs = [
+    {'id': 'home', 'title': 'Local Windows Privilege Escalation', 'content': 'Content for Local Windows Privilege Escalation'},
+    {'id': 'menu1', 'title': 'Android APK', 'content': 'Content for Android APK'},
+    {'id': 'menu2', 'title': 'IOS Pentesting', 'content': 'Content for IOS Pentesting'},
+    {'id': 'menu3', 'title': 'Linux Privilege Escalation', 'content': 'Content for Linux Privilege Escalation'}
+  ]
+  return render(request, 'checklist.html', {'tabs': tabs})
 
 def settings(request):
   return render(request, 'settings.html')
