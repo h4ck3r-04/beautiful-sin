@@ -1,0 +1,15 @@
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.notes-textarea {
+  width: 100%;
+  margin-top: 10px;
+}
+.download-btn {
+  margin-top: 10px;
+}
+.download-btn i {
+  margin-right: 5px;
+}
