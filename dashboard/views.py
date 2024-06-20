@@ -13,6 +13,7 @@ def search_view(request):
     'Mobile Security': '/mobile-security',
     'Forensics': '/forensics',
     'Social Engineering': '/social-engineering',
+    'Checklist': '/checklist',
     'Settings': '/settings',
   }
   if query:
@@ -42,6 +43,9 @@ def forensics(request):
 
 def social_engineering(request):
   return render(request, 'social-engineering.html')
+
+def checklist(request):
+  return render(request, 'checklist.html')
 
 def settings(request):
   return render(request, 'settings.html')

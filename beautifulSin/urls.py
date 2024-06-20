@@ -28,5 +28,6 @@ urlpatterns = [
     path('mobile-security', views.mobile_security, name='mobile-security'),
     path('forensics', views.forensics, name='forensics'),
     path('social-engineering', views.social_engineering, name='social-engineering'),
+    path('checklist', views.checklist, name='checklist'),
     path('settings', views.settings, name='settings')
 ]
