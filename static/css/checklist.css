@@ -1,15 +1,74 @@
-.header-row {
+.nav-tabs .nav-link {
+  color: #e0e0e0;
+}
+.nav-tabs .nav-link.active {
+  background-color: #333;
+  color: #ffffff;
+}
+.nav-tabs .close {
+  margin-left: 8px;
+  font-size: 16px;
+  line-height: 1;
+  color: black;
+  opacity: 0.5;
+}
+.nav-tabs li {
   display: flex;
-  justify-content: space-between;
   align-items: center;
 }
-.notes-textarea {
+.nav-tabs li a {
+  display: flex;
+  align-items: center;
+}
+.nav-tabs li a .close {
+  margin-left: 8px;
+}
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
   width: 100%;
-  margin-top: 10px;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(15, 15, 15, 0.8);
+  justify-content: center;
+  align-items: center;
 }
-.download-btn {
-  margin-top: 10px;
+.modal-content {
+  background-color: #1d1c1c;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #9b9b9b;
+  width: 80%;
+  max-width: 400px;
+  text-align: center;
+  color: #e0e0e0;
 }
-.download-btn i {
-  margin-right: 5px;
+.modal input, .modal select {
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  font-size: 16px;
+  background-color: #0e0e0e;
+  color: #e0e0e0;
+  border: 1px solid #555;
+}
+.modal button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #0e0e0e;
+  color: #e0e0e0;
+  border: none;
+}
+#emptyMessage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 70vh;
+  color: #e0e0e0;
+  font-size: 24px;
+  text-align: center;
 }
