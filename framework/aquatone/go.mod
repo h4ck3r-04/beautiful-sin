@@ -18,6 +18,7 @@ require (
 
 require (
 	github.com/PuerkitoBio/goquery v1.9.2
+	github.com/lair-framework/go-nmap v0.0.0-20191202052157-3507e0b03523
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/parnurzeal/gorequest v0.3.0
