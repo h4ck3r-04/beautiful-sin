@@ -81,7 +81,7 @@ extern "C" {
 #endif
 
 extern _Bool isUrl(char* s);
-extern int add(int a, int b);
+extern _Bool hasSupportedScheme(char* s);
 
 #ifdef __cplusplus
 }
