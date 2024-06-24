@@ -2,19 +2,24 @@ package main
 
 /*
 #include <stdint.h>
+#include <stdbool.h>
 */
-
 import "C"
-import "github.com/h4ck3r-04/aquatone/multiply"
+import (
+	"net/url"
+)
 
-//export multiplication
-func multiplication(a C.int, b C.int) C.int {
-	return C.int(multiply.Multiply(int(a), int(b)))
-}
-
-//export add
-func add(a C.int, b C.int) C.int {
-	return a + b
+//export isUrl
+func isUrl(s *C.char) C.bool {
+	str := C.GoString(s)
+	u, err := url.ParseRequestURI(str)
+	if err != nil {
+		return C.bool(false)
+	}
+	if u.Scheme == "" {
+		return C.bool(false)
+	}
+	return C.bool(true)
 }
 
 func main() {}

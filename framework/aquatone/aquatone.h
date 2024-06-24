@@ -19,6 +19,12 @@ typedef struct { const char *p; ptrdiff_t n; } _GoString_;
 /* Start of preamble from import "C" comments.  */
 
 
+#line 3 "main.go"
+
+#include <stdint.h>
+#include <stdbool.h>
+
+#line 1 "cgo-generated-wrapper"
 
 
 /* End of preamble from import "C" comments.  */
@@ -74,7 +80,7 @@ typedef struct { void *data; GoInt len; GoInt cap; } GoSlice;
 extern "C" {
 #endif
 
-extern int multiplication(int a, int b);
+extern _Bool isUrl(char* s);
 extern int add(int a, int b);
 
 #ifdef __cplusplus
