@@ -23,6 +23,7 @@ typedef struct { const char *p; ptrdiff_t n; } _GoString_;
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 #line 1 "cgo-generated-wrapper"
 
@@ -82,6 +83,7 @@ extern "C" {
 
 extern _Bool isUrl(char* s);
 extern _Bool hasSupportedScheme(char* s);
+extern char* initSession();
 
 #ifdef __cplusplus
 }
