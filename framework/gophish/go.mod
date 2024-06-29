@@ -8,6 +8,7 @@ require (
 )
 
 require (
+	github.com/gorilla/context v1.1.2
 	github.com/konsorten/go-windows-terminal-sequences v1.0.1 // indirect
 	github.com/sirupsen/logrus v1.4.2 // indirect
 	golang.org/x/sys v0.21.0 // indirect
