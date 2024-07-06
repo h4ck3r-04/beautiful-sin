@@ -27,8 +27,10 @@ class Parser:
         else:
           if 'www' in self.word:
             self.word = str(self.word).replace('www.', '').replace('www', '')
-          self.hostnames.add(str(line).replace('"', '').replace(',', '') + '.' + self.word)
+          self.hostnames.add(
+              str(line).replace(
+                  '"', '').replace(
+                  ',', '') + '.' + self.word)
       else:
         continue
     return self.ips, self.hostnames
-

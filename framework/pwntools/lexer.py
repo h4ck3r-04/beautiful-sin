@@ -20,10 +20,11 @@ from pygments.token import String
 from pygments.token import Text
 
 __all__ = [
-  'GasLexer', 'ObjdumpLexer', 'DObjdumpLexer', 'CppObjdumpLexer',
-  'CObjdumpLexer', 'LlvmLexer', 'NasmLexer', 'NasmObjdumpLexer',
-  'Ca65Lexer'
+    'GasLexer', 'ObjdumpLexer', 'DObjdumpLexer', 'CppObjdumpLexer',
+    'CObjdumpLexer', 'LlvmLexer', 'NasmLexer', 'NasmObjdumpLexer',
+    'Ca65Lexer'
 ]
+
 
 class PwntoolsLexer(RegexLexer):
   """
@@ -42,64 +43,64 @@ class PwntoolsLexer(RegexLexer):
   bad = r'(?:\(bad\))'
 
   tokens = {
-    'root': [
-      include('whitespace'),
-      (identifier + ':', Name.Label),
-      (r'\.' + identifier, Name.Attribute, 'directive-args'),
-      (r'lock|rep(n?z)?|data\d+', Name.Attribute),
-      (identifier, Name.Function, 'instruction-args'),
-      (r'[\r\n]+', Text),
-      (bad, Text)
-    ],
+      'root': [
+          include('whitespace'),
+          (identifier + ':', Name.Label),
+          (r'\.' + identifier, Name.Attribute, 'directive-args'),
+          (r'lock|rep(n?z)?|data\d+', Name.Attribute),
+          (identifier, Name.Function, 'instruction-args'),
+          (r'[\r\n]+', Text),
+          (bad, Text)
+      ],
 
-    'directive-args': [
-      (identifier, Name.Constant),
-      (string, String),
-      ('@' + identifier, Name.Attribute),
-      (number, Number.Integer),
-      (r'[\r\n]+', Text, '#pop'),
+      'directive-args': [
+          (identifier, Name.Constant),
+          (string, String),
+          ('@' + identifier, Name.Attribute),
+          (number, Number.Integer),
+          (r'[\r\n]+', Text, '#pop'),
 
-      (r'#.*?$', Comment, '#pop'),
+          (r'#.*?$', Comment, '#pop'),
 
-      include('punctuation'),
-      include('whitespace')
-    ],
-    'instruction-args': [
-      # For objdump-disassembled code, shouldn't occur in
-      # actual assembler input
-      ('([a-z0-9]+)( )(<)('+identifier+')(>)',
-          bygroups(Number.Hex, Text, Punctuation, Name.Constant,
+          include('punctuation'),
+          include('whitespace')
+      ],
+      'instruction-args': [
+          # For objdump-disassembled code, shouldn't occur in
+          # actual assembler input
+          ('([a-z0-9]+)( )(<)(' + identifier + ')(>)',
+           bygroups(Number.Hex, Text, Punctuation, Name.Constant,
                     Punctuation)),
-      ('([a-z0-9]+)( )(<)('+identifier+')([-+])('+number+')(>)',
-          bygroups(Number.Hex, Text, Punctuation, Name.Constant,
+          ('([a-z0-9]+)( )(<)(' + identifier + ')([-+])(' + number + ')(>)',
+           bygroups(Number.Hex, Text, Punctuation, Name.Constant,
                     Punctuation, Number.Integer, Punctuation)),
 
-      # Fun things
-      (r'([\]\[]|BYTE|DWORD|PTR|\+|\-|}|{|\^|>>|<<|&)', Text),
+          # Fun things
+          (r'([\]\[]|BYTE|DWORD|PTR|\+|\-|}|{|\^|>>|<<|&)', Text),
 
-      # Address constants
-      (identifier, Name.Constant),
-      (number, Number.Integer),
-      # Registers
-      ('%' + identifier, Name.Variable),
-      ('$' + identifier, Name.Variable),
-      # Numeric constants
-      ('$'+number, Number.Integer),
-      ('#'+number, Number.Integer),
-      (r"$'(.|\\')'", String.Char),
-      (r'[\r\n]+', Text, '#pop'),
-      include('punctuation'),
-      include('whitespace')
-    ],
-    'whitespace': [
-      (r'\n', Text),
-      (r'\s+', Text),
-      (r'/\*.*?\*/', Comment),
-      (r';.*$', Comment)
-    ],
-    'punctuation': [
-      (r'[-*,.():]+', Punctuation)
-    ]
+          # Address constants
+          (identifier, Name.Constant),
+          (number, Number.Integer),
+          # Registers
+          ('%' + identifier, Name.Variable),
+          ('$' + identifier, Name.Variable),
+          # Numeric constants
+          ('$' + number, Number.Integer),
+          ('#' + number, Number.Integer),
+          (r"$'(.|\\')'", String.Char),
+          (r'[\r\n]+', Text, '#pop'),
+          include('punctuation'),
+          include('whitespace')
+      ],
+      'whitespace': [
+          (r'\n', Text),
+          (r'\s+', Text),
+          (r'/\*.*?\*/', Comment),
+          (r';.*$', Comment)
+      ],
+      'punctuation': [
+          (r'[-*,.():]+', Punctuation)
+      ]
   }
 
   def analyse_text(text):

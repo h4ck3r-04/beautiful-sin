@@ -11,8 +11,10 @@ import six
 
 original_hex = six.moves.builtins.hex
 
+
 def hex(number):
   original_hex.__doc__
   return original_hex(number).rstrip('L')
+
 
 six.moves.builtins.hex = hex

@@ -62,96 +62,100 @@ from pwnlib.util import safeeval
 
 
 class ConstantsModule(ModuleType):
-    """
-    ModuleType specialization in order to automatically
-    route queries down to the correct module based on the
-    current context arch / os.
-    """
-    Constant = Constant
+  """
+  ModuleType specialization in order to automatically
+  route queries down to the correct module based on the
+  current context arch / os.
+  """
+  Constant = Constant
 
-    possible_submodules = set(context.oses) | set(context.architectures)
+  possible_submodules = set(context.oses) | set(context.architectures)
 
-    def __init__(self, name, module):
-        super(ConstantsModule, self).__init__(name)
-        self.__dict__.update(module.__dict__)
-        self._env_store = {}
+  def __init__(self, name, module):
+    super(ConstantsModule, self).__init__(name)
+    self.__dict__.update(module.__dict__)
+    self._env_store = {}
 
-    def guess(self):
-        if context.os in self.__name__ and context.arch in self.__name__:
-            return self
+  def guess(self):
+    if context.os in self.__name__ and context.arch in self.__name__:
+      return self
 
-        mod = self
-        mod = getattr(mod, context.os, mod)
-        mod = getattr(mod, context.arch, mod)
+    mod = self
+    mod = getattr(mod, context.os, mod)
+    mod = getattr(mod, context.arch, mod)
+    return mod
+
+  def __dir__(self):
+    return self.__all__
+
+  def __getattr__(self, key):
+    # Special case for __all__, we want to return the contextually
+    # relevant module.
+    if key == '__all__':
+      return list(self.guess().__dict__.keys())
+
+    # Special case for all other special properties which aren't defined
+    if key.endswith('__'):
+      raise AttributeError
+
+    # This code is only hit if the attribute doesn't already exist.
+    # Attempt to import a module by the specified name.
+    if key in self.possible_submodules:
+      try:
+        mod = importlib.import_module('.' + key, self.__name__)
+        mod = ConstantsModule(mod.__name__, mod)
+        setattr(self, key, mod)
+        sys.modules[mod.__name__] = mod
         return mod
+      except ImportError:
+        pass
+    else:
+      mod = self.guess()
+      if mod is not self and hasattr(mod, key):
+        return getattr(mod, key)
 
-    def __dir__(self):
-        return self.__all__
+    raise AttributeError("'module' object has no attribute '%s'" % key)
 
-    def __getattr__(self, key):
-        # Special case for __all__, we want to return the contextually
-        # relevant module.
-        if key == '__all__':
-            return list(self.guess().__dict__.keys())
+  def eval(self, string):
+    """eval(string) -> value
 
-        # Special case for all other special properties which aren't defined
-        if key.endswith('__'):
-            raise AttributeError
+    Evaluates a string in the context of values of this module.
 
-        # This code is only hit if the attribute doesn't already exist.
-        # Attempt to import a module by the specified name.
-        if key in self.possible_submodules:
-            try:
-                mod = importlib.import_module('.' + key, self.__name__)
-                mod = ConstantsModule(mod.__name__, mod)
-                setattr(self, key, mod)
-                sys.modules[mod.__name__] = mod
-                return mod
-            except ImportError:
-                pass
-        else:
-            mod = self.guess()
-            if mod is not self and hasattr(mod, key):
-                return getattr(mod, key)
+    Example:
 
-        raise AttributeError("'module' object has no attribute '%s'" % key)
+        >>> with context.local(arch = 'i386', os = 'linux'):
+        ...    print(13 == constants.eval('SYS_execve + PROT_WRITE'))
+        True
+        >>> with context.local(arch = 'amd64', os = 'linux'):
+        ...    print(61 == constants.eval('SYS_execve + PROT_WRITE'))
+        True
+        >>> with context.local(arch = 'amd64', os = 'linux'):
+        ...    print(61 == constants.eval('SYS_execve + PROT_WRITE'))
+        True
+    """
+    if not isinstance(string, str):
+      return string
 
-    def eval(self, string):
-        """eval(string) -> value
+    simple = getattr(self, string, None)
 
-        Evaluates a string in the context of values of this module.
+    if simple is not None:
+      return simple
 
-        Example:
+    key = context.os, context.arch
+    if key not in self._env_store:
+      self._env_store[key] = {
+          key: getattr(
+              self,
+              key) for key in dir(self) if not key.endswith('__')}
 
-            >>> with context.local(arch = 'i386', os = 'linux'):
-            ...    print(13 == constants.eval('SYS_execve + PROT_WRITE'))
-            True
-            >>> with context.local(arch = 'amd64', os = 'linux'):
-            ...    print(61 == constants.eval('SYS_execve + PROT_WRITE'))
-            True
-            >>> with context.local(arch = 'amd64', os = 'linux'):
-            ...    print(61 == constants.eval('SYS_execve + PROT_WRITE'))
-            True
-        """
-        if not isinstance(string, str):
-            return string
+    val = safeeval.values(string, self._env_store[key])
 
-        simple = getattr(self, string, None)
+    # if the expression is not assembly-safe, it is not so vital to preserve it
+    if set(string) & (set(bytearray(range(32)).decode())
+                      | set('"#$\',.;@[\\]`{}')):
+      string = val
 
-        if simple is not None:
-            return simple
-
-        key = context.os, context.arch
-        if key not in self._env_store:
-            self._env_store[key] = {key: getattr(self, key) for key in dir(self) if not key.endswith('__')}
-
-        val = safeeval.values(string, self._env_store[key])
-
-        # if the expression is not assembly-safe, it is not so vital to preserve it
-        if set(string) & (set(bytearray(range(32)).decode()) | set('"#$\',.;@[\\]`{}')):
-            string = val
-
-        return Constant('(%s)' % string, val)
+    return Constant('(%s)' % string, val)
 
 
 # To prevent garbage collection

@@ -13,4 +13,5 @@ from pwntools.elf.elf import load
 from pwntools.elf import maps
 from pwntools.elf import plt
 
-__all__ = ['load', 'ELF', 'Core'] + sorted(filter(lambda x: not x.startswith('_'), datatypes.__dict__.keys()))
+__all__ = ['load', 'ELF', 'Core'] + \
+    sorted(filter(lambda x: not x.startswith('_'), datatypes.__dict__.keys()))

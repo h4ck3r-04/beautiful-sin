@@ -253,105 +253,105 @@ from pwnlib.util.misc import which, normalize_argv_env
 
 log = getLogger(__name__)
 
-def test_all():
-    test('a') ##
-    test('ab') ##
-    test('a b') ##
-    test(r"a\'b") ##
-    everything_1 = b''.join(six.int2byte(c) for c in range(1,256))
-    for s in everything_1:
-        test(s)
-        test(s*4)
-        test(s * 2 + b'X')
-        test(b'X' + s * 2)
-        test((s*2 + b'X') * 2)
-        test(s + b'X' + s)
-        test(s*2 + b'X' + s*2)
-        test(b'X' + s*2 + b'X')
-    test(everything_1)
-    test(everything_1 * 2)
-    test(everything_1 * 4)
-    everything_2 = b''.join(six.int2byte(c) * 2 for c in range(1,256)) ##
-    test(everything_2)
 
-    test(randoms(1000, everything_1))
+def test_all():
+  test('a')
+  test('ab')
+  test('a b')
+  test(r"a\'b")
+  everything_1 = b''.join(six.int2byte(c) for c in range(1, 256))
+  for s in everything_1:
+    test(s)
+    test(s * 4)
+    test(s * 2 + b'X')
+    test(b'X' + s * 2)
+    test((s * 2 + b'X') * 2)
+    test(s + b'X' + s)
+    test(s * 2 + b'X' + s * 2)
+    test(b'X' + s * 2 + b'X')
+  test(everything_1)
+  test(everything_1 * 2)
+  test(everything_1 * 4)
+  everything_2 = b''.join(six.int2byte(c) * 2 for c in range(1, 256))
+  test(everything_2)
+
+  test(randoms(1000, everything_1))
 
 
 def test(original):
-    r"""Tests the output provided by a shell interpreting a string
+  r"""Tests the output provided by a shell interpreting a string
 
-    >>> test(b'foobar')
-    >>> test(b'foo bar')
-    >>> test(b'foo bar\n')
-    >>> test(b"foo'bar")
-    >>> test(b"foo\\\\bar")
-    >>> test(b"foo\\\\'bar")
-    >>> test(b"foo\\x01'bar")
-    >>> test(b'\n')
-    >>> test(b'\xff')
-    >>> test(os.urandom(16 * 1024).replace(b'\x00', b''))
-    """
-    input = sh_string(original)
+  >>> test(b'foobar')
+  >>> test(b'foo bar')
+  >>> test(b'foo bar\n')
+  >>> test(b"foo'bar")
+  >>> test(b"foo\\\\bar")
+  >>> test(b"foo\\\\'bar")
+  >>> test(b"foo\\x01'bar")
+  >>> test(b'\n')
+  >>> test(b'\xff')
+  >>> test(os.urandom(16 * 1024).replace(b'\x00', b''))
+  """
+  input = sh_string(original)
 
-    if not isinstance(input, str):
-        input = input.decode('latin1')
+  if not isinstance(input, str):
+    input = input.decode('latin1')
 
-    cmdstr = six.b('/bin/echo %s' % input)
+  cmdstr = six.b('/bin/echo %s' % input)
 
-    SUPPORTED_SHELLS = [
-        ['ash', '-c', cmdstr],
-        ['bash', '-c', cmdstr],
-        ['bash', '-o', 'posix', '-c', cmdstr],
-        ['ksh', '-c', cmdstr],
-        ['busybox', 'ash', '-c', cmdstr],
-        ['busybox', 'sh', '-c', cmdstr],
-        ['zsh', '-c', cmdstr],
-        ['posh', '-c', cmdstr],
-        ['dash', '-c', cmdstr],
-        ['mksh', '-c', cmdstr],
-        ['sh', '-c', cmdstr],
-        # ['adb', 'exec-out', cmdstr]
-    ]
+  SUPPORTED_SHELLS = [
+      ['ash', '-c', cmdstr],
+      ['bash', '-c', cmdstr],
+      ['bash', '-o', 'posix', '-c', cmdstr],
+      ['ksh', '-c', cmdstr],
+      ['busybox', 'ash', '-c', cmdstr],
+      ['busybox', 'sh', '-c', cmdstr],
+      ['zsh', '-c', cmdstr],
+      ['posh', '-c', cmdstr],
+      ['dash', '-c', cmdstr],
+      ['mksh', '-c', cmdstr],
+      ['sh', '-c', cmdstr],
+      # ['adb', 'exec-out', cmdstr]
+  ]
 
-    for shell in SUPPORTED_SHELLS:
-        binary = shell[0]
+  for shell in SUPPORTED_SHELLS:
+    binary = shell[0]
 
-        if not which(binary):
-            log.warn_once('Shell %r is not available' % binary)
-            continue
+    if not which(binary):
+      log.warn_once('Shell %r is not available' % binary)
+      continue
 
-        progress = log.progress('%s: %r' % (binary, original))
+    progress = log.progress('%s: %r' % (binary, original))
 
-        with context.quiet:
-            with process(shell) as p:
-                data = p.recvall(timeout=2)
-                p.kill()
+    with context.quiet:
+      with process(shell) as p:
+        data = p.recvall(timeout=2)
+        p.kill()
 
-        # Remove exactly one trailing newline added by echo
-        # We cannot assume "echo -n" exists.
-        data = data[:-1]
+    # Remove exactly one trailing newline added by echo
+    # We cannot assume "echo -n" exists.
+    data = data[:-1]
 
-        if data != original:
-            for i,(a,b) in enumerate(zip(data, original)):
-                if a == b:
-                    continue
-                log.error(('Shell %r failed\n' +
-                          'Expect %r\n' +
-                          'Sent   %r\n' +
-                          'Output %r\n' +
-                          'Mismatch @ %i: %r vs %r') \
-                        % (binary, original, input, data, i, a, b))
+    if data != original:
+      for i, (a, b) in enumerate(zip(data, original)):
+        if a == b:
+          continue
+        log.error(('Shell %r failed\n' +
+                  'Expect %r\n' +
+                   'Sent   %r\n' +
+                   'Output %r\n' +
+                   'Mismatch @ %i: %r vs %r')
+                  % (binary, original, input, data, i, a, b))
 
-        progress.success()
+    progress.success()
 
 
-
-SINGLE_QUOTE = "'" ##
-ESCAPED_SINGLE_QUOTE = r"\'" ##
+SINGLE_QUOTE = "'"
+ESCAPED_SINGLE_QUOTE = r"\'"
 
 ESCAPED = {
     # The single quote itself must be escaped, outside of single quotes.
-    "'": "\\'", ##
+    "'": "\\'",
 
     # Slashes must themselves be escaped
     #
@@ -360,171 +360,174 @@ ESCAPED = {
     # '\\': '"\\\\\\\\"'
 }
 
+
 def sh_string(s):
-    r"""Outputs a string in a format that will be understood by /bin/sh.
+  r"""Outputs a string in a format that will be understood by /bin/sh.
 
-    If the string does not contain any bad characters, it will simply be
-    returned, possibly with quotes. If it contains bad characters, it will
-    be escaped in a way which is compatible with most known systems.
+  If the string does not contain any bad characters, it will simply be
+  returned, possibly with quotes. If it contains bad characters, it will
+  be escaped in a way which is compatible with most known systems.
 
-    Warning:
-        This does not play along well with the shell's built-in "echo".
-        It works exactly as expected to set environment variables and
-        arguments, **unless** it's the shell-builtin echo.
+  Warning:
+      This does not play along well with the shell's built-in "echo".
+      It works exactly as expected to set environment variables and
+      arguments, **unless** it's the shell-builtin echo.
 
-    Argument:
-        s(str): String to escape.
+  Argument:
+      s(str): String to escape.
 
-    Examples:
+  Examples:
 
-        >>> sh_string('foobar')
-        'foobar'
-        >>> sh_string('foo bar')
-        "'foo bar'"
-        >>> sh_string("foo'bar")
-        "'foo'\\''bar'"
-        >>> sh_string("foo\\\\bar")
-        "'foo\\\\bar'"
-        >>> sh_string("foo\\\\'bar")
-        "'foo\\\\'\\''bar'"
-        >>> sh_string("foo\\x01'bar")
-        "'foo\\x01'\\''bar'"
-    """
-    orig_s = s
-    if isinstance(s, (bytes, bytearray)):
-        s = s.decode('latin1')
-    if '\x00' in s: ##
-        log.error("sh_string(): Cannot create a null-byte")
+      >>> sh_string('foobar')
+      'foobar'
+      >>> sh_string('foo bar')
+      "'foo bar'"
+      >>> sh_string("foo'bar")
+      "'foo'\\''bar'"
+      >>> sh_string("foo\\\\bar")
+      "'foo\\\\bar'"
+      >>> sh_string("foo\\\\'bar")
+      "'foo\\\\'\\''bar'"
+      >>> sh_string("foo\\x01'bar")
+      "'foo\\x01'\\''bar'"
+  """
+  orig_s = s
+  if isinstance(s, (bytes, bytearray)):
+    s = s.decode('latin1')
+  if '\x00' in s:
+    log.error("sh_string(): Cannot create a null-byte")
 
-    if not s:
-        quoted_string = "''" ##
-        if isinstance(orig_s, (bytes, bytearray)):
-            quoted_string = quoted_string.encode('latin1')
-        return quoted_string
-
-    chars = set(s)
-    very_good = set(string.ascii_letters + string.digits + "_+.,/-") ##
-
-    # Alphanumeric can always just be used verbatim.
-    if chars <= very_good:
-        return orig_s
-
-    # If there are no single-quotes, the entire thing can be single-quoted
-    if not (chars & set(ESCAPED)):
-        quoted_string = "'%s'" % s ##
-        if isinstance(orig_s, (bytes, bytearray)):
-            quoted_string = quoted_string.encode('latin1')
-        return quoted_string
-
-    # If there are single-quotes, we can single-quote around them, and simply
-    # escape the single-quotes.
-    quoted_string = '' ##
-    quoted = False
-    for char in s: ##
-        if char not in ESCAPED:
-            if not quoted:
-                quoted_string += SINGLE_QUOTE
-                quoted = True
-            quoted_string += char ##
-        else:
-            if quoted:
-                quoted = False
-                quoted_string += SINGLE_QUOTE
-            quoted_string += ESCAPED[char]
-
-    if quoted:
-        quoted_string += SINGLE_QUOTE
-
+  if not s:
+    quoted_string = "''"
     if isinstance(orig_s, (bytes, bytearray)):
-        quoted_string = quoted_string.encode('latin1')
+      quoted_string = quoted_string.encode('latin1')
     return quoted_string
 
-def sh_prepare(variables, export = False):
-    r"""Outputs a posix compliant shell command that will put the data specified
-    by the dictionary into the environment.
+  chars = set(s)
+  very_good = set(string.ascii_letters + string.digits + "_+.,/-")
 
-    It is assumed that the keys in the dictionary are valid variable names that
-    does not need any escaping.
+  # Alphanumeric can always just be used verbatim.
+  if chars <= very_good:
+    return orig_s
 
-    Arguments:
-      variables(dict): The variables to set.
-      export(bool): Should the variables be exported or only stored in the shell environment?
-      output(str): A valid posix shell command that will set the given variables.
+  # If there are no single-quotes, the entire thing can be single-quoted
+  if not (chars & set(ESCAPED)):
+    quoted_string = "'%s'" % s
+    if isinstance(orig_s, (bytes, bytearray)):
+      quoted_string = quoted_string.encode('latin1')
+    return quoted_string
 
-    It is assumed that `var` is a valid name for a variable in the shell.
+  # If there are single-quotes, we can single-quote around them, and simply
+  # escape the single-quotes.
+  quoted_string = ''
+  quoted = False
+  for char in s:
+    if char not in ESCAPED:
+      if not quoted:
+        quoted_string += SINGLE_QUOTE
+        quoted = True
+      quoted_string += char
+    else:
+      if quoted:
+        quoted = False
+        quoted_string += SINGLE_QUOTE
+      quoted_string += ESCAPED[char]
 
-    Examples:
+  if quoted:
+    quoted_string += SINGLE_QUOTE
 
-        >>> sh_prepare({'X': 'foobar'})
-        b'X=foobar'
-        >>> r = sh_prepare({'X': 'foobar', 'Y': 'cookies'})
-        >>> r == b'X=foobar;Y=cookies' or r == b'Y=cookies;X=foobar' or r
-        True
-        >>> sh_prepare({'X': 'foo bar'})
-        b"X='foo bar'"
-        >>> sh_prepare({'X': "foo'bar"})
-        b"X='foo'\\''bar'"
-        >>> sh_prepare({'X': "foo\\\\bar"})
-        b"X='foo\\\\bar'"
-        >>> sh_prepare({'X': "foo\\\\'bar"})
-        b"X='foo\\\\'\\''bar'"
-        >>> sh_prepare({'X': "foo\\x01'bar"})
-        b"X='foo\\x01'\\''bar'"
-        >>> sh_prepare({'X': "foo\\x01'bar"}, export = True)
-        b"export X='foo\\x01'\\''bar'"
-        >>> sh_prepare({'X': "foo\\x01'bar\\n"})
-        b"X='foo\\x01'\\''bar\\n'"
-        >>> sh_prepare({'X': "foo\\x01'bar\\n"})
-        b"X='foo\\x01'\\''bar\\n'"
-        >>> sh_prepare({'X': "foo\\x01'bar\\n"}, export = True)
-        b"export X='foo\\x01'\\''bar\\n'"
-    """
+  if isinstance(orig_s, (bytes, bytearray)):
+    quoted_string = quoted_string.encode('latin1')
+  return quoted_string
 
-    out = []
-    export = b'export ' if export else b''
 
-    _, variables = normalize_argv_env([], variables, log)
+def sh_prepare(variables, export=False):
+  r"""Outputs a posix compliant shell command that will put the data specified
+  by the dictionary into the environment.
 
-    for k, v in variables:
-        out.append(b'%s%s=%s' % (export, k, sh_string(v)))
+  It is assumed that the keys in the dictionary are valid variable names that
+  does not need any escaping.
 
-    return b';'.join(out)
+  Arguments:
+    variables(dict): The variables to set.
+    export(bool): Should the variables be exported or only stored in the shell environment?
+    output(str): A valid posix shell command that will set the given variables.
+
+  It is assumed that `var` is a valid name for a variable in the shell.
+
+  Examples:
+
+      >>> sh_prepare({'X': 'foobar'})
+      b'X=foobar'
+      >>> r = sh_prepare({'X': 'foobar', 'Y': 'cookies'})
+      >>> r == b'X=foobar;Y=cookies' or r == b'Y=cookies;X=foobar' or r
+      True
+      >>> sh_prepare({'X': 'foo bar'})
+      b"X='foo bar'"
+      >>> sh_prepare({'X': "foo'bar"})
+      b"X='foo'\\''bar'"
+      >>> sh_prepare({'X': "foo\\\\bar"})
+      b"X='foo\\\\bar'"
+      >>> sh_prepare({'X': "foo\\\\'bar"})
+      b"X='foo\\\\'\\''bar'"
+      >>> sh_prepare({'X': "foo\\x01'bar"})
+      b"X='foo\\x01'\\''bar'"
+      >>> sh_prepare({'X': "foo\\x01'bar"}, export = True)
+      b"export X='foo\\x01'\\''bar'"
+      >>> sh_prepare({'X': "foo\\x01'bar\\n"})
+      b"X='foo\\x01'\\''bar\\n'"
+      >>> sh_prepare({'X': "foo\\x01'bar\\n"})
+      b"X='foo\\x01'\\''bar\\n'"
+      >>> sh_prepare({'X': "foo\\x01'bar\\n"}, export = True)
+      b"export X='foo\\x01'\\''bar\\n'"
+  """
+
+  out = []
+  export = b'export ' if export else b''
+
+  _, variables = normalize_argv_env([], variables, log)
+
+  for k, v in variables:
+    out.append(b'%s%s=%s' % (export, k, sh_string(v)))
+
+  return b';'.join(out)
+
 
 def sh_command_with(f, *args):
-    r"""sh_command_with(f, arg0, ..., argN) -> command
+  r"""sh_command_with(f, arg0, ..., argN) -> command
 
-    Returns a command create by evaluating `f(new_arg0, ..., new_argN)`
-    whenever `f` is a function and `f % (new_arg0, ..., new_argN)` otherwise.
+  Returns a command create by evaluating `f(new_arg0, ..., new_argN)`
+  whenever `f` is a function and `f % (new_arg0, ..., new_argN)` otherwise.
 
-    If the arguments are purely alphanumeric, then they are simply passed to
-    function. If they are simple to escape, they will be escaped and passed to
-    the function.
+  If the arguments are purely alphanumeric, then they are simply passed to
+  function. If they are simple to escape, they will be escaped and passed to
+  the function.
 
-    If the arguments contain trailing newlines, then it is hard to use them
-    directly because of a limitation in the posix shell. In this case the
-    output from `f` is prepended with a bit of code to create the variables.
+  If the arguments contain trailing newlines, then it is hard to use them
+  directly because of a limitation in the posix shell. In this case the
+  output from `f` is prepended with a bit of code to create the variables.
 
-    Examples:
+  Examples:
 
-        >>> sh_command_with(lambda: "echo hello")
-        'echo hello'
-        >>> sh_command_with(lambda x: "echo " + x, "hello")
-        'echo hello'
-        >>> sh_command_with(lambda x: "/bin/echo " + x, "\\x01")
-        "/bin/echo '\\x01'"
-        >>> sh_command_with(lambda x: "/bin/echo " + x, "\\x01\\n")
-        "/bin/echo '\\x01\\n'"
-        >>> sh_command_with("/bin/echo %s", "\\x01\\n")
-        "/bin/echo '\\x01\\n'"
-    """
+      >>> sh_command_with(lambda: "echo hello")
+      'echo hello'
+      >>> sh_command_with(lambda x: "echo " + x, "hello")
+      'echo hello'
+      >>> sh_command_with(lambda x: "/bin/echo " + x, "\\x01")
+      "/bin/echo '\\x01'"
+      >>> sh_command_with(lambda x: "/bin/echo " + x, "\\x01\\n")
+      "/bin/echo '\\x01\\n'"
+      >>> sh_command_with("/bin/echo %s", "\\x01\\n")
+      "/bin/echo '\\x01\\n'"
+  """
 
-    args = list(args)
-    out = []
+  args = list(args)
+  out = []
 
-    for n in range(len(args)):
-        args[n] = sh_string(args[n])
-    if hasattr(f, '__call__'):
-        out.append(f(*args))
-    else:
-        out.append(f % tuple(args))
-    return ';'.join(out)
+  for n in range(len(args)):
+    args[n] = sh_string(args[n])
+  if hasattr(f, '__call__'):
+    out.append(f(*args))
+  else:
+    out.append(f % tuple(args))
+  return ';'.join(out)

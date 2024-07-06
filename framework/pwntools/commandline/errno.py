@@ -8,13 +8,14 @@ from pwntools.commandline import common
 
 parser = common.parser_commands.add_parser(
     'errno',
-    help = 'Prints out error messages',
-    description = 'Prints out error messages'
+    help='Prints out error messages',
+    description='Prints out error messages'
 )
 
 parser.add_argument(
     'error', help='Error message or value', type=str
 )
+
 
 def main(args):
   try:
@@ -41,9 +42,9 @@ def main(args):
 
     value = getattr(errno, name)
 
-
   print('#define', name, value)
   print(os.strerror(value))
 
+
 if __name__ == '__main__':
-    common.main(__file__)
+  common.main(__file__)

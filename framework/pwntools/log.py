@@ -113,25 +113,25 @@ from pwntools.term import spinners
 from pwntools.term import text
 
 __all__ = [
-  'getLogger', 'install_default_handler', 'rootlogger'
+    'getLogger', 'install_default_handler', 'rootlogger'
 ]
 
 
-
 # list of prefixes to use for the different message types.  note that the `text`
-# module won't add any escape codes if `pwntools.context.log_console.isatty()` is `False`
+# module won't add any escape codes if
+# `pwntools.context.log_console.isatty()` is `False`
 _msgtype_prefixes = {
-  'status'       : [text.magenta, 'x'],
-  'success'      : [text.bold_green, '+'],
-  'failure'      : [text.bold_red, '-'],
-  'debug'        : [text.bold_red, 'DEBUG'],
-  'info'         : [text.bold_blue, '*'],
-  'warning'      : [text.bold_yellow, '!'],
-  'error'        : [text.on_red, 'ERROR'],
-  'exception'    : [text.on_red, 'ERROR'],
-  'critical'     : [text.on_red, 'CRITICAL'],
-  'info_once'    : [text.bold_blue, '*'],
-  'warning_once' : [text.bold_yellow, '!'],
+    'status': [text.magenta, 'x'],
+    'success': [text.bold_green, '+'],
+    'failure': [text.bold_red, '-'],
+    'debug': [text.bold_red, 'DEBUG'],
+    'info': [text.bold_blue, '*'],
+    'warning': [text.bold_yellow, '!'],
+    'error': [text.on_red, 'ERROR'],
+    'exception': [text.on_red, 'ERROR'],
+    'critical': [text.on_red, 'CRITICAL'],
+    'info_once': [text.bold_blue, '*'],
+    'warning_once': [text.bold_yellow, '!'],
 }
 
 
@@ -154,11 +154,13 @@ def read_log_config(settings):
     else:
       log.warn("Unknown configuration option %r in section %r" % (key, 'log'))
 
+
 register_config('log', read_log_config)
 
 # the text decoration to use for spinners.  the spinners themselves can be found
 # in the `pwntools.term.spinners` module
 _spinner_style = text.bold_blue
+
 
 class Progress(object):
   """
@@ -171,6 +173,7 @@ class Progress(object):
   This class is intended for internal use.  Progress loggers should be created
   using :meth:`Logger.progress`.
   """
+
   def __init__(self, logger, msg, status, level, args, kwargs):
     self._logger = logger
     self._msg = msg
@@ -212,7 +215,7 @@ class Progress(object):
       self.last_status = now
       self._log(status, args, kwargs, 'status')
 
-  def success(self, status = 'Done', *args, **kwargs):
+  def success(self, status='Done', *args, **kwargs):
     """success(status = 'Done', *args, **kwargs)
 
     Logs that the running job succeeded.  No further status updates are
@@ -223,7 +226,7 @@ class Progress(object):
     self._log(status, args, kwargs, 'success')
     self._stopped = True
 
-  def failure(self, status = 'Failed', *args, **kwargs):
+  def failure(self, status='Failed', *args, **kwargs):
     """failure(message)
 
     Logs that the running job failed.  No further status updates are
@@ -243,6 +246,7 @@ class Progress(object):
       self.success()
     else:
       self.failure()
+
 
 class Logger(object):
   """
@@ -264,7 +268,7 @@ class Logger(object):
 
   Loggers instantiated with :func:`getLogger` will be of this class.
   """
-  _one_time_infos    = set()
+  _one_time_infos = set()
   _one_time_warnings = set()
 
   def __init__(self, logger=None):
@@ -275,7 +279,7 @@ class Logger(object):
       # the rest of the library
       module = self.__module__
       if not module.startswith('pwntools'):
-          module = 'pwntools.' + module
+        module = 'pwntools.' + module
       # - end hack -
 
       logger_name = '%s.%s.%s' % (module, self.__class__.__name__, id(self))
@@ -288,7 +292,7 @@ class Logger(object):
       return levelString
     return logging._levelNames[levelString.upper()]
 
-  def _log(self, level, msg, args, kwargs, msgtype, progress = None):
+  def _log(self, level, msg, args, kwargs, msgtype, progress=None):
     # Logs are strings, not bytes.  Handle Python3 bytes() objects.
     msg = _need_text(msg)
 
@@ -298,7 +302,7 @@ class Logger(object):
     kwargs['extra'] = extra
     self._logger.log(level, msg, *args, **kwargs)
 
-  def progress(self, message, status = '', *args, **kwargs):
+  def progress(self, message, status='', *args, **kwargs):
     """progress(message, status = '', *args, level = logging.INFO, **kwargs) -> Progress
 
     Creates a new progress logger which creates log records with log level
@@ -500,6 +504,7 @@ class Logger(object):
   @property
   def level(self):
     return self._logger.level
+
   @level.setter
   def level(self, value):
     with context.local(log_level=value):
@@ -520,9 +525,11 @@ class Handler(logging.StreamHandler):
   @property
   def stream(self):
     return context.log_console
+
   @stream.setter
   def stream(self, value):
     pass
+
   def emit(self, record):
     """
     Emit a log record or create/update an animated progress logger
@@ -563,6 +570,7 @@ class Handler(logging.StreamHandler):
       spinner_handle = term.output('[x] ')
       msg_handle = term.output(msg)
       stop = threading.Event()
+
       def spin():
         '''Wheeeee!'''
         state = 0
@@ -573,7 +581,7 @@ class Handler(logging.StreamHandler):
           state = (state + 1) % len(states)
           if stop.wait(0.1):
             break
-      t = Thread(target = spin)
+      t = Thread(target=spin)
       t.daemon = True
       t.start()
       progress._spinner_handle = spinner_handle
@@ -591,6 +599,7 @@ class Handler(logging.StreamHandler):
       style, symb = _msgtype_prefixes[msgtype]
       prefix = '[%s] ' % style(symb)
       progress._spinner_handle.update(prefix)
+
 
 class Formatter(logging.Formatter):
   """
@@ -610,10 +619,10 @@ class Formatter(logging.Formatter):
 
   # Indentation from the left side of the terminal.
   # All log messages will be indented at list this far.
-  indent    = '    '
+  indent = '    '
 
   # Newline, followed by an indent.  Used to wrap multiple lines.
-  nlindent  = '\n' + indent
+  nlindent = '\n' + indent
 
   def format(self, record):
     # use the default formatter to actually format the record
@@ -645,6 +654,7 @@ class Formatter(logging.Formatter):
     msg = self.nlindent.join(msg.splitlines())
     return msg
 
+
 def _need_text(s):
   # circular import wrapper
   global _need_text
@@ -653,24 +663,31 @@ def _need_text(s):
 
 # we keep a dictionary of loggers such that multiple calls to `getLogger` with
 # the same name will return the same logger
+
+
 def getLogger(name):
   return Logger(logging.getLogger(name))
+
 
 class LogfileHandler(logging.FileHandler):
   def __init__(self):
     super(LogfileHandler, self).__init__('', delay=1)
+
   @property
   def stream(self):
     return context.log_file
+
   @stream.setter
   def stream(self, value):
     pass
+
   def handle(self, *a, **kw):
     if self.stream.name is not None:
       super(LogfileHandler, self).handle(*a, **kw)
 
+
 iso_8601 = '%Y-%m-%dT%H:%M:%S'
-fmt      = '%(asctime)s:%(levelname)s:%(name)s:%(message)s'
+fmt = '%(asctime)s:%(levelname)s:%(name)s:%(message)s'
 log_file = LogfileHandler()
 log_file.setFormatter(logging.Formatter(fmt, iso_8601))
 
@@ -687,9 +704,10 @@ log_file.setFormatter(logging.Formatter(fmt, iso_8601))
 #     logger.addHandler(myCoolPitchingHandler)
 #
 rootlogger = getLogger('pwntools')
-console   = Handler()
+console = Handler()
 formatter = Formatter()
 console.setFormatter(formatter)
+
 
 def install_default_handler():
   '''install_default_handler()
@@ -698,7 +716,7 @@ def install_default_handler():
   the ``pwntools`` root logger.  This function is automatically called from when
   importing :mod:`pwn`.
   '''
-  logger         = logging.getLogger('pwntools')
+  logger = logging.getLogger('pwntools')
 
   if console not in logger.handlers:
     logger.addHandler(console)

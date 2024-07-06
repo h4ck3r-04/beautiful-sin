@@ -7,8 +7,8 @@ from pwntools.commandline import common
 
 parser = common.parser_commands.add_parser(
     'disablenx',
-    help = 'Disable NX for an ELF binary',
-    description = 'Disable NX for an ELF binary'
+    help='Disable NX for an ELF binary',
+    description='Disable NX for an ELF binary'
 )
 parser.add_argument(
     'elf',
@@ -17,11 +17,13 @@ parser.add_argument(
     help='Files to check'
 )
 
+
 def main(args):
-    for f in args.elf:
-        e = ELF(f.name)
-        e.disable_nx()
-        ELF(e.path)
+  for f in args.elf:
+    e = ELF(f.name)
+    e.disable_nx()
+    ELF(e.path)
+
 
 if __name__ == '__main__':
-    pwntools.commandline.common.main(__file__)
+  pwntools.commandline.common.main(__file__)

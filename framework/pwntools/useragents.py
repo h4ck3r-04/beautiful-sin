@@ -11,6 +11,7 @@ import random as randommod
 
 _cache = None
 
+
 def _load():
   global _cache
   if _cache is None:
@@ -20,6 +21,7 @@ def _load():
         if line:
           _cache.add(line.strip())
   return _cache
+
 
 def getall():
   """
@@ -36,6 +38,7 @@ def getall():
     True
   """
   return _load().copy()
+
 
 def random():
   """

@@ -1,4 +1,6 @@
 from __future__ import absolute_import
+from pwntools.commandline import common
+from pwn import *
 from __future__ import division
 
 import argparse
@@ -7,13 +9,11 @@ import sys
 import pwntools.args
 pwntools.args.free_form = False
 
-from pwn import *
-from pwntools.commandline import common
 
 parser = common.parser_commands.add_parser(
     'asm',
-    help = 'Assemble shellcode into bytes',
-    description = 'Assemble shellcode into bytes',
+    help='Assemble shellcode into bytes',
+    description='Assemble shellcode into bytes',
 )
 
 parser.add_argument(
@@ -30,7 +30,7 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    "-o","--output",
+    "-o", "--output",
     metavar='file',
     help="Output file (defaults to stdout)",
     type=argparse.FileType('wb'),
@@ -39,17 +39,17 @@ parser.add_argument(
 
 parser.add_argument(
     '-c', '--context',
-    metavar = 'context',
-    action = 'append',
-    type   = common.context_arg,
-    choices = common.choices,
-    help = 'The os/architecture/endianness/bits the shellcode will run in (default: linux/i386), choose from: %s' % common.choices,
+    metavar='context',
+    action='append',
+    type=common.context_arg,
+    choices=common.choices,
+    help='The os/architecture/endianness/bits the shellcode will run in (default: linux/i386), choose from: %s' % common.choices,
 )
 
 parser.add_argument(
     '-v', '--avoid',
     action='append',
-    help = 'Encode the shellcode to avoid the listed bytes (provided as hex)'
+    help='Encode the shellcode to avoid the listed bytes (provided as hex)'
 )
 
 parser.add_argument(
@@ -57,7 +57,7 @@ parser.add_argument(
     dest='avoid',
     action='append_const',
     const='0a',
-    help = 'Encode the shellcode to avoid newlines'
+    help='Encode the shellcode to avoid newlines'
 )
 
 parser.add_argument(
@@ -65,7 +65,7 @@ parser.add_argument(
     dest='avoid',
     action='append_const',
     const='00',
-    help = 'Encode the shellcode to avoid NULL bytes'
+    help='Encode the shellcode to avoid NULL bytes'
 )
 
 
@@ -97,44 +97,48 @@ parser.add_argument(
     action='store_true'
 )
 
+
 def main(args):
-    tty    = args.output.isatty()
+  tty = args.output.isatty()
 
-    if args.infile.isatty() and not args.lines:
-        parser.print_usage()
-        sys.exit(1)
+  if args.infile.isatty() and not args.lines:
+    parser.print_usage()
+    sys.exit(1)
 
-    data   = '\n'.join(args.lines) or args.infile.read()
-    output = asm(data.replace(';', '\n'))
-    fmt    = args.format or ('hex' if tty else 'raw')
-    formatters = {'r':bytes, 'h':enhex, 's':repr}
+  data = '\n'.join(args.lines) or args.infile.read()
+  output = asm(data.replace(';', '\n'))
+  fmt = args.format or ('hex' if tty else 'raw')
+  formatters = {'r': bytes, 'h': enhex, 's': repr}
 
-    if args.avoid:
-        avoid = unhex(''.join(args.avoid))
-        output = encode(output, avoid)
+  if args.avoid:
+    avoid = unhex(''.join(args.avoid))
+    output = encode(output, avoid)
 
-    if args.debug:
-        proc = gdb.debug_shellcode(output, arch=context.arch)
-        proc.interactive()
-        sys.exit(0)
+  if args.debug:
+    proc = gdb.debug_shellcode(output, arch=context.arch)
+    proc.interactive()
+    sys.exit(0)
 
-    if args.run:
-        proc = run_shellcode(output)
-        proc.interactive()
-        sys.exit(0)
+  if args.run:
+    proc = run_shellcode(output)
+    proc.interactive()
+    sys.exit(0)
 
-    if fmt[0] == 'e':
-        args.output.write(make_elf(output))
-        try: os.fchmod(args.output.fileno(), 0o700)
-        except OSError: pass
-    else:
-        output = formatters[fmt[0]](output)
-        if not hasattr(output, 'decode'):
-            output = output.encode('ascii')
-        args.output.write(output)
+  if fmt[0] == 'e':
+    args.output.write(make_elf(output))
+    try:
+      os.fchmod(args.output.fileno(), 0o700)
+    except OSError:
+      pass
+  else:
+    output = formatters[fmt[0]](output)
+    if not hasattr(output, 'decode'):
+      output = output.encode('ascii')
+    args.output.write(output)
 
-    if tty and fmt != 'raw':
-        args.output.write(b'\n')
+  if tty and fmt != 'raw':
+    args.output.write(b'\n')
+
 
 if __name__ == '__main__':
-    pwntools.commandline.common.main(__file__)
+  pwntools.commandline.common.main(__file__)

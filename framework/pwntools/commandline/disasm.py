@@ -1,4 +1,6 @@
 from __future__ import absolute_import
+from pwntools.commandline import common
+from pwn import *
 from __future__ import division
 from __future__ import print_function
 
@@ -10,34 +12,32 @@ import sys
 import pwntools.args
 pwntools.args.free_form = False
 
-from pwn import *
-from pwntools.commandline import common
 
 parser = common.parser_commands.add_parser(
     'disasm',
-    help = 'Disassemble bytes into text format',
-    description = 'Disassemble bytes into text format'
+    help='Disassemble bytes into text format',
+    description='Disassemble bytes into text format'
 )
 
 parser.add_argument(
     'hex',
-    metavar = 'hex',
-    nargs = '*',
-    help = 'Hex-string to disassemble. If none are supplied, then it uses stdin in non-hex mode.'
+    metavar='hex',
+    nargs='*',
+    help='Hex-string to disassemble. If none are supplied, then it uses stdin in non-hex mode.'
 )
 
 parser.add_argument(
     '-c', '--context',
-    metavar = 'arch_or_os',
-    action = 'append',
-    type   = common.context_arg,
-    choices = common.choices,
-    help = 'The os/architecture/endianness/bits the shellcode will run in (default: linux/i386), choose from: %s' % common.choices,
+    metavar='arch_or_os',
+    action='append',
+    type=common.context_arg,
+    choices=common.choices,
+    help='The os/architecture/endianness/bits the shellcode will run in (default: linux/i386), choose from: %s' % common.choices,
 )
 
 
 parser.add_argument(
-    "-a","--address",
+    "-a", "--address",
     metavar='address',
     help="Base address",
     type=str,
@@ -61,53 +61,57 @@ parser.add_argument(
 
 
 def main(args):
-    if len(args.hex) > 0:
-        dat = ''.join(args.hex).encode('utf-8', 'surrogateescape')
-        dat = dat.translate(None, string.whitespace.encode('ascii'))
-        if not set(string.hexdigits.encode('ascii')) >= set(dat):
-            print("This is not a hex string")
-            exit(-1)
-        dat = unhex(dat)
-    else:
-        dat = getattr(sys.stdin, 'buffer', sys.stdin).read()
+  if len(args.hex) > 0:
+    dat = ''.join(args.hex).encode('utf-8', 'surrogateescape')
+    dat = dat.translate(None, string.whitespace.encode('ascii'))
+    if not set(string.hexdigits.encode('ascii')) >= set(dat):
+      print("This is not a hex string")
+      exit(-1)
+    dat = unhex(dat)
+  else:
+    dat = getattr(sys.stdin, 'buffer', sys.stdin).read()
 
+  if args.color:
+    from pygments import highlight
+    from pygments.formatters import TerminalFormatter
+    from pwntools.lexer import PwntoolsLexer
 
-    if args.color:
-        from pygments import highlight
-        from pygments.formatters import TerminalFormatter
-        from pwntools.lexer import PwntoolsLexer
+    dis = disasm(dat, vma=safeeval.const(args.address))
 
-        dis = disasm(dat, vma=safeeval.const(args.address))
+    # Note: those patterns are copied from disasm function
+    pattern = '^( *[0-9a-f]+: *)((?:[0-9a-f]+ )+ *)(.*)'
+    lines = []
+    for line in dis.splitlines():
+      match = re.search(pattern, line)
+      if not match:
+        # Append as one element tuple
+        lines.append((line,))
+        continue
 
-        # Note: those patterns are copied from disasm function
-        pattern = '^( *[0-9a-f]+: *)((?:[0-9a-f]+ )+ *)(.*)'
-        lines = []
-        for line in dis.splitlines():
-            match = re.search(pattern, line)
-            if not match:
-                # Append as one element tuple
-                lines.append((line,))
-                continue
+      groups = match.groups()
+      o, b, i = groups
 
-            groups = match.groups()
-            o, b, i = groups
+      lines.append((o, b, i))
 
-            lines.append((o, b, i))
+    def highlight_bytes(t): return ''.join(
+        map(
+            lambda x: x.replace(
+                '00', text.red('00')).replace(
+                '0a', text.red('0a')), group(
+                2, t)))
+    for line in lines:
+      if len(line) == 3:
+        o, b, i = line
+        b = ' '.join(highlight_bytes(bb) for bb in b.split(' '))
+        i = highlight(i.strip(), PwntoolsLexer(), TerminalFormatter()).strip()
+        i = i.replace(',', ', ')
+        print(o, b, i)
+      else:
+        print(line[0])
+    return
 
+  print(disasm(dat, vma=safeeval.const(args.address)))
 
-        highlight_bytes = lambda t: ''.join(map(lambda x: x.replace('00', text.red('00')).replace('0a', text.red('0a')), group(2, t)))
-        for line in lines:
-            if len(line) == 3:
-                o, b, i = line
-                b = ' '.join(highlight_bytes(bb) for bb in b.split(' '))
-                i = highlight(i.strip(), PwntoolsLexer(), TerminalFormatter()).strip()
-                i = i.replace(',',', ')
-                print(o,b,i)
-            else:
-                print(line[0])
-        return
-
-    print(disasm(dat, vma=safeeval.const(args.address)))
 
 if __name__ == '__main__':
-    pwntools.commandline.common.main(__file__)
+  pwntools.commandline.common.main(__file__)

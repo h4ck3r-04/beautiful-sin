@@ -1,6 +1,7 @@
 import re
 from collections.abc import Set
 
+
 class Parser:
   def __init__(self, results, word) -> None:
     self.results = results
@@ -9,34 +10,49 @@ class Parser:
 
   async def genericClean(self) -> None:
     self.results = (
-      self.results.replace('<em>', '')
-      .replace('<b>', '')
-      .replace('</b>', '')
-      .replace('</em>', '')
-      .replace('%3a', '')
-      .replace('<strong>', '')
-      .replace('</strong>', '')
-      .replace('<wbr>', '')
-      .replace('</wbr>', '')
+        self.results.replace('<em>', '')
+        .replace('<b>', '')
+        .replace('</b>', '')
+        .replace('</em>', '')
+        .replace('%3a', '')
+        .replace('<strong>', '')
+        .replace('</strong>', '')
+        .replace('<wbr>', '')
+        .replace('</wbr>', '')
     )
-    for search in ('<','>',':','=',';','&','%3A','%3D','%3C','%2f','/','\\',):
+    for search in ('<', '>', ':', '=', ';', '&', '%3A',
+                   '%3D', '%3C', '%2f', '/', '\\',):
       self.results = self.results.replace(search, '')
-  
+
   async def urlClean(self) -> None:
-    self.results = self.results.replace('<em>', '').replace('</em>', '').replace('%2f', '').replace('%3a', '')
+    self.results = self.results.replace(
+        '<em>',
+        '').replace(
+        '</em>',
+        '').replace(
+        '%2f',
+        '').replace(
+        '%3a',
+        '')
     for search in ('<', '>', ':', '=', ';', '&', '%3A', '%3D', '%3C'):
       self.results = self.results.replace(search, '')
 
   async def emails(self):
     await self.genericClean()
-    reg_emails = re.compile(r'[a-zA-Z0-9.\-_+#~!$&\',;=:]+' + '@' + '[a-zA-Z0-9.-]*' + self.word.replace('www.', ''))
+    reg_emails = re.compile(
+        r'[a-zA-Z0-9.\-_+#~!$&\',;=:]+' +
+        '@' +
+        '[a-zA-Z0-9.-]*' +
+        self.word.replace(
+            'www.',
+            ''))
     self.temp = reg_emails.findall(self.results)
     emails = await self.unique()
     true_emails = {
-      str(email)[1:].lower().strip()
-      if len(str(email)) > 1 and str(email)[0] == '.'
-      else len(str(email)) > 1 and str(email).lower().strip()
-      for email in emails
+        str(email)[1:].lower().strip()
+        if len(str(email)) > 1 and str(email)[0] == '.'
+        else len(str(email)) > 1 and str(email).lower().strip()
+        for email in emails
     }
     return true_emails
 
@@ -46,7 +62,8 @@ class Parser:
     self.temp = reg_urls.findall(self.results)
     allurls = await self.unique()
     for iteration im allurls:
-      if iteration.count('webcache') or iteration.count('google.com') or iteration.count('search?hl'):
+      if iteration.count('webcache') or iteration.count(
+              'google.com') or iteration.count('search?hl'):
         pass
       else:
         urls.append(iteration)
@@ -83,13 +100,15 @@ class Parser:
     self.temp = reg_sets.findall(self.results)
     sets = []
     for iteration in self.temp:
-      delete = iteration.replace('>','')
+      delete = iteration.replace('>', '')
       delete = delete.replace('</a</font', '')
       sets.append(delete)
     return sets
-  
+
   async def urls(self) -> Set[str]:
-    found = re.finditer(r'(http|https)://(www\.)?trello.com/([a-zA-Z\d\-_\.]+/?)*', self.results)
+    found = re.finditer(
+        r'(http|https)://(www\.)?trello.com/([a-zA-Z\d\-_\.]+/?)*',
+        self.results)
     urls = {match.group().strip() for match in found}
     return urls
 

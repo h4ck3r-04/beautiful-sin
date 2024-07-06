@@ -1,5 +1,6 @@
 import ctypes
 
+
 class Aquatone:
   def __init__(self):
     self.aquatone = ctypes.CDLL('aquatone.so')
@@ -23,5 +24,3 @@ class Aquatone:
 
   def initSession(self):
     return self.aquatone.initSession()
-
-

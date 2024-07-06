@@ -2,6 +2,7 @@ __all__ = ["PwntoolsException"]
 import sys
 import traceback
 
+
 class PwntoolsException(Exception):
   """
   Exception thrown by :func:`pwntools.log.error`
@@ -9,7 +10,8 @@ class PwntoolsException(Exception):
   Pwntools functions that encounter unrecoverable errors should call the
   :func:`pwntools.log.error` function instead of throwing this exception directly.
   """
-  def __init__(self, msg, reason = None, exit_code = None):
+
+  def __init__(self, msg, reason=None, exit_code=None):
     '''bar'''
     Exception.__init__(self, msg)
     self.reason = reason

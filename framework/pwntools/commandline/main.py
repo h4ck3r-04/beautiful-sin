@@ -49,13 +49,15 @@ commands = {
     'version': version.main,
 }
 
+
 def main():
-    if len(sys.argv) < 2:
-        parser.print_usage()
-        sys.exit()
-    args = parser.parse_args()
-    with context.local(log_console = sys.stderr):
-        commands[args.command](args)
+  if len(sys.argv) < 2:
+    parser.print_usage()
+    sys.exit()
+  args = parser.parse_args()
+  with context.local(log_console=sys.stderr):
+    commands[args.command](args)
+
 
 if __name__ == '__main__':
-    main()
+  main()
