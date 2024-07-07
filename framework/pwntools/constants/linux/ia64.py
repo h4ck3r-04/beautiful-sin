@@ -1,4 +1,4 @@
-from pwnlib.constants.constant import Constant
+from pwntools.constants.constant import Constant
 __NR_Linux = Constant('__NR_Linux', 1024)
 __NR_ni_syscall = Constant('__NR_ni_syscall', (1024 + 0))
 __NR_exit = Constant('__NR_exit', (1024 + 1))

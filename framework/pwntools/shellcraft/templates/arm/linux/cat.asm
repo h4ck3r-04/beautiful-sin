@@ -1,6 +1,6 @@
 <%
-  from pwnlib import constants
-  from pwnlib.shellcraft import arm
+  from pwntools import constants
+  from pwntools.shellcraft import arm
 %>
 <%page args="filename, fd=1"/>
 <%docstring>

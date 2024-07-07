@@ -1,7 +1,7 @@
 <%
-  from pwntools.shellcraft import aarch64, pretty
-  from pwntools.constants import Constant
-  from pwntools.abi import freebsd_aarch64_syscall as abi
+  from pwnlib.shellcraft import aarch64, pretty
+  from pwnlib.constants import Constant
+  from pwnlib.abi import freebsd_aarch64_syscall as abi
   from six import text_type
 %>
 <%page args="syscall = None, arg0 = None, arg1 = None, arg2 = None, arg3 = None, arg4 = None, arg5 = None"/>
@@ -9,7 +9,7 @@
 Args: [syscall_number, \*args]
     Does a syscall
 
-Any of the arguments can be expressions to be evaluated by :func:`pwntools.constants.eval`.
+Any of the arguments can be expressions to be evaluated by :func:`pwnlib.constants.eval`.
 
 Example:
 

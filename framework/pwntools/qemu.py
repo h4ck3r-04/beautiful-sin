@@ -87,89 +87,89 @@ log = getLogger(__name__)
 
 @LocalContext
 def archname():
-  """
-  Returns the name which QEMU uses for the currently selected
-  architecture.
+    """
+    Returns the name which QEMU uses for the currently selected
+    architecture.
 
-  >>> pwntools.qemu.archname()
-  'i386'
-  >>> pwntools.qemu.archname(arch='powerpc')
-  'ppc'
-  """
-  return {
-      ('amd64', 'little'): 'x86_64',
-      ('arm', 'big'): 'armeb',
-      ('mips', 'little'): 'mipsel',
-      ('mips64', 'little'): 'mips64el',
-      ('powerpc', 'big'): 'ppc',
-      ('powerpc64', 'big'): 'ppc64',
-      ('powerpc64', 'little'): 'ppc64le',
-      ('thumb', 'little'): 'arm',
-      ('thumb', 'big'): 'armeb',
-  }.get((context.arch, context.endian), context.arch)
+    >>> pwntools.qemu.archname()
+    'i386'
+    >>> pwntools.qemu.archname(arch='powerpc')
+    'ppc'
+    """
+    return {
+        ('amd64', 'little'): 'x86_64',
+        ('arm', 'big'): 'armeb',
+        ('mips', 'little'): 'mipsel',
+        ('mips64', 'little'): 'mips64el',
+        ('powerpc', 'big'): 'ppc',
+        ('powerpc64', 'big'): 'ppc64',
+        ('powerpc64', 'little'): 'ppc64le',
+        ('thumb', 'little'): 'arm',
+        ('thumb', 'big'): 'armeb',
+    }.get((context.arch, context.endian), context.arch)
 
 
 @LocalContext
 def user_path():
-  """
-  Returns the path to the QEMU-user binary for the currently
-  selected architecture.
+    """
+    Returns the path to the QEMU-user binary for the currently
+    selected architecture.
 
-  >>> pwntools.qemu.user_path()
-  'qemu-i386-static'
-  >>> pwntools.qemu.user_path(arch='thumb')
-  'qemu-arm-static'
-  """
-  arch = archname()
-  system = 'qemu-system-' + arch
-  normal = 'qemu-' + arch
-  static = normal + '-static'
+    >>> pwntools.qemu.user_path()
+    'qemu-i386-static'
+    >>> pwntools.qemu.user_path(arch='thumb')
+    'qemu-arm-static'
+    """
+    arch = archname()
+    system = 'qemu-system-' + arch
+    normal = 'qemu-' + arch
+    static = normal + '-static'
 
-  if context.os == 'baremetal':
-    if misc.which(system):
-      return system
-  else:
-    if misc.which(static):
-      return static
+    if context.os == 'baremetal':
+        if misc.which(system):
+            return system
+    else:
+        if misc.which(static):
+            return static
 
-    if misc.which(normal):
-      return normal
+        if misc.which(normal):
+            return normal
 
-  log.warn_once("Neither %r nor %r are available" % (normal, static))
+    log.warn_once("Neither %r nor %r are available" % (normal, static))
 
 
 @LocalContext
 def ld_prefix(path=None, env=None):
-  """Returns the linker prefix for the selected qemu-user binary
+    """Returns the linker prefix for the selected qemu-user binary
 
-  >>> pwntools.qemu.ld_prefix(arch='arm')
-  '/etc/qemu-binfmt/arm'
-  """
-  if context.os == 'baremetal':
-    return ""
+    >>> pwntools.qemu.ld_prefix(arch='arm')
+    '/etc/qemu-binfmt/arm'
+    """
+    if context.os == 'baremetal':
+        return ""
 
-  if path is None:
-    path = user_path()
+    if path is None:
+        path = user_path()
 
-  # Did we explicitly specify the path in an environment variable?
-  if env and b'QEMU_LD_PREFIX' in env:
-    return env[b'QEMU_LD_PREFIX'].decode()
+    # Did we explicitly specify the path in an environment variable?
+    if env and b'QEMU_LD_PREFIX' in env:
+        return env[b'QEMU_LD_PREFIX'].decode()
 
-  if 'QEMU_LD_PREFIX' in os.environ:
-    return os.environ['QEMU_LD_PREFIX']
+    if 'QEMU_LD_PREFIX' in os.environ:
+        return os.environ['QEMU_LD_PREFIX']
 
-  # Cyclic imports!
-  from pwntools.tubes.process import process
+    # Cyclic imports!
+    from pwntools.tubes.process import process
 
-  with context.quiet:
-    with process([path, '--help'], env=env) as io:
-      line = io.recvline_regex(b'QEMU_LD_PREFIX *=')
+    with context.quiet:
+        with process([path, '--help'], env=env) as io:
+            line = io.recvline_regex(b'QEMU_LD_PREFIX *=')
 
-  _, libpath = line.split(b'=', 1)
+    _, libpath = line.split(b'=', 1)
 
-  libpath = libpath.strip()
+    libpath = libpath.strip()
 
-  if not isinstance(libpath, str):
-    libpath = libpath.decode('utf-8')
+    if not isinstance(libpath, str):
+        libpath = libpath.decode('utf-8')
 
-  return libpath
+    return libpath

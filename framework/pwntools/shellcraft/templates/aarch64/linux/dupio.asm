@@ -1,5 +1,5 @@
-<% from pwntools.shellcraft import common %>
-<% from pwntools.shellcraft.aarch64 import mov,setregs %>
+<% from pwnlib.shellcraft import common %>
+<% from pwnlib.shellcraft.aarch64 import mov,setregs %>
 <%page args="sock = 'x12'"/>
 <%docstring>
 Args: [sock (imm/reg) = x12]

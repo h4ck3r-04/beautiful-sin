@@ -18,33 +18,33 @@ parser.add_argument(
 
 
 def main(args):
-  try:
-    value = int(args.error, 0)
+    try:
+        value = int(args.error, 0)
 
-    if value < 0:
-      value = -value
+        if value < 0:
+            value = -value
 
-    if 0x100000000 - value < 0x200:
-      value = 0x100000000 - value
+        if 0x100000000 - value < 0x200:
+            value = 0x100000000 - value
 
-    if value not in errno.errorcode:
-      print("No errno for %s" % value)
-      return
+        if value not in errno.errorcode:
+            print("No errno for %s" % value)
+            return
 
-    name = errno.errorcode[value]
+        name = errno.errorcode[value]
 
-  except ValueError:
-    name = args.error.upper()
+    except ValueError:
+        name = args.error.upper()
 
-    if not hasattr(errno, name):
-      print("No errno for %s" % name)
-      return
+        if not hasattr(errno, name):
+            print("No errno for %s" % name)
+            return
 
-    value = getattr(errno, name)
+        value = getattr(errno, name)
 
-  print('#define', name, value)
-  print(os.strerror(value))
+    print('#define', name, value)
+    print(os.strerror(value))
 
 
 if __name__ == '__main__':
-  common.main(__file__)
+    common.main(__file__)

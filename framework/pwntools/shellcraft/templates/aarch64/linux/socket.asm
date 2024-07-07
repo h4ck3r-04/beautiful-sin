@@ -1,6 +1,6 @@
-<% from pwntools.shellcraft import aarch64 %>
-<% from pwntools.util.net import sockaddr %>
-<% from pwntools.constants import SOCK_STREAM, SOCK_DGRAM, SYS_socket %>
+<% from pwnlib.shellcraft import aarch64 %>
+<% from pwnlib.util.net import sockaddr %>
+<% from pwnlib.constants import SOCK_STREAM, SOCK_DGRAM, SYS_socket %>
 <%page args="network = 'ipv4', proto = 'tcp'"/>
 <%docstring>
 Creates a new socket

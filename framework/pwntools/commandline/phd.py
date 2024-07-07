@@ -68,48 +68,49 @@ parser.add_argument(
 
 
 def asint(s):
-  if s.startswith('0x'):
-    return int(s, 16)
-  elif s.startswith('0'):
-    return int(s, 8)
-  else:
-    return int(s, 10)
+    if s.startswith('0x'):
+        return int(s, 16)
+    elif s.startswith('0'):
+        return int(s, 8)
+    else:
+        return int(s, 10)
 
 
 def main(args):
-  infile = args.file
-  width = asint(args.width)
-  skip = asint(args.skip)
-  count = asint(args.count)
-  offset = asint(args.offset)
+    infile = args.file
+    width = asint(args.width)
+    skip = asint(args.skip)
+    count = asint(args.count)
+    offset = asint(args.offset)
 
-  # if `--color` has no argument it is `None`
-  color = args.color or 'always'
-  text.when = color
+    # if `--color` has no argument it is `None`
+    color = args.color or 'always'
+    text.when = color
 
-  if skip:
+    if skip:
+        try:
+            infile.seek(skip, os.SEEK_CUR)
+        except IOError:
+            infile.read(skip)
+
+    if count != -1:
+        infile = io.BytesIO(infile.read(count))
+
+    hl = []
+    if args.highlight:
+        for hs in args.highlight:
+            for h in hs.split(','):
+                hl.append(asint(h))
+
+    signal.signal(signal.SIGPIPE, signal.SIG_DFL)
+
     try:
-      infile.seek(skip, os.SEEK_CUR)
-    except IOError:
-      infile.read(skip)
-
-  if count != -1:
-    infile = io.BytesIO(infile.read(count))
-
-  hl = []
-  if args.highlight:
-    for hs in args.highlight:
-      for h in hs.split(','):
-        hl.append(asint(h))
-
-  signal.signal(signal.SIGPIPE, signal.SIG_DFL)
-
-  try:
-    for line in hexdump_iter(infile, width, highlight=hl, begin=offset + skip):
-      print(line)
-  except (KeyboardInterrupt, IOError):
-    pass
+        for line in hexdump_iter(
+                infile, width, highlight=hl, begin=offset + skip):
+            print(line)
+    except (KeyboardInterrupt, IOError):
+        pass
 
 
 if __name__ == '__main__':
-  pwntools.commandline.common.main(__file__)
+    pwntools.commandline.common.main(__file__)

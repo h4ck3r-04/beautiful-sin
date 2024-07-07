@@ -29,15 +29,15 @@ parser.add_argument(
 
 
 def main(args):
-  files = args.elf or args.elf2 or []
+    files = args.elf or args.elf2 or []
 
-  if not files:
-    parser.print_usage()
-    return
+    if not files:
+        parser.print_usage()
+        return
 
-  for f in files:
-    e = ELF(f.name)
+    for f in files:
+        e = ELF(f.name)
 
 
 if __name__ == '__main__':
-  common.main(__file__)
+    common.main(__file__)

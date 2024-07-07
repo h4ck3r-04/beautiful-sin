@@ -1,4 +1,4 @@
-from pwnlib.constants.constant import Constant
+from pwntools.constants.constant import Constant
 
 terminate = Constant('terminate', 1)
 SYS_terminate = Constant('SYS_terminate', 1)

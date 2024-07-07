@@ -3,7 +3,7 @@ __all__ = ['spinners']
 
 
 def billboard(msg, window):
-  return [msg[i: i + window].ljust(window, ' ') for i, _ in enumerate(msg)]
+    return [msg[i: i + window].ljust(window, ' ') for i, _ in enumerate(msg)]
 
 
 spinners = [

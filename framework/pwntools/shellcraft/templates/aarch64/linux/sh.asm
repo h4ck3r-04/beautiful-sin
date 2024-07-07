@@ -1,4 +1,4 @@
-<% from pwntools import shellcraft as SC %>
+<% from pwnlib import shellcraft as SC %>
 <%docstring>
 Execute a different process.
 

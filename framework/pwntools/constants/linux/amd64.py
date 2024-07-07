@@ -1,4 +1,4 @@
-from pwnlib.constants.constant import Constant
+from pwntools.constants.constant import Constant
 __NR_read = Constant('__NR_read', 0)
 __NR_write = Constant('__NR_write', 1)
 __NR_open = Constant('__NR_open', 2)

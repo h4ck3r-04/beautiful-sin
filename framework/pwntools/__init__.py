@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 from . import args
-from pwntools.version import __version__
+
+from .version import __version__
 
 version = __version__
 

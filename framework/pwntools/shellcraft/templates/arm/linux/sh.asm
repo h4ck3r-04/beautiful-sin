@@ -1,4 +1,4 @@
-<% from pwnlib.shellcraft import arm %>
+<% from pwntools.shellcraft import arm %>
 <%docstring>
 Execute a different process.
 

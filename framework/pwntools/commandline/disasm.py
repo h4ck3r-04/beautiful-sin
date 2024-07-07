@@ -61,57 +61,56 @@ parser.add_argument(
 
 
 def main(args):
-  if len(args.hex) > 0:
-    dat = ''.join(args.hex).encode('utf-8', 'surrogateescape')
-    dat = dat.translate(None, string.whitespace.encode('ascii'))
-    if not set(string.hexdigits.encode('ascii')) >= set(dat):
-      print("This is not a hex string")
-      exit(-1)
-    dat = unhex(dat)
-  else:
-    dat = getattr(sys.stdin, 'buffer', sys.stdin).read()
+    if len(args.hex) > 0:
+        dat = ''.join(args.hex).encode('utf-8', 'surrogateescape')
+        dat = dat.translate(None, string.whitespace.encode('ascii'))
+        if not set(string.hexdigits.encode('ascii')) >= set(dat):
+            print("This is not a hex string")
+            exit(-1)
+        dat = unhex(dat)
+    else:
+        dat = getattr(sys.stdin, 'buffer', sys.stdin).read()
 
-  if args.color:
-    from pygments import highlight
-    from pygments.formatters import TerminalFormatter
-    from pwntools.lexer import PwntoolsLexer
+    if args.color:
+        from pygments import highlight
+        from pygments.formatters import TerminalFormatter
+        from pwntools.lexer import PwntoolsLexer
 
-    dis = disasm(dat, vma=safeeval.const(args.address))
+        dis = disasm(dat, vma=safeeval.const(args.address))
 
-    # Note: those patterns are copied from disasm function
-    pattern = '^( *[0-9a-f]+: *)((?:[0-9a-f]+ )+ *)(.*)'
-    lines = []
-    for line in dis.splitlines():
-      match = re.search(pattern, line)
-      if not match:
-        # Append as one element tuple
-        lines.append((line,))
-        continue
+        # Note: those patterns are copied from disasm function
+        pattern = '^( *[0-9a-f]+: *)((?:[0-9a-f]+ )+ *)(.*)'
+        lines = []
+        for line in dis.splitlines():
+            match = re.search(pattern, line)
+            if not match:
+                # Append as one element tuple
+                lines.append((line,))
+                continue
 
-      groups = match.groups()
-      o, b, i = groups
+            groups = match.groups()
+            o, b, i = groups
 
-      lines.append((o, b, i))
+            lines.append((o, b, i))
 
-    def highlight_bytes(t): return ''.join(
-        map(
-            lambda x: x.replace(
-                '00', text.red('00')).replace(
-                '0a', text.red('0a')), group(
-                2, t)))
-    for line in lines:
-      if len(line) == 3:
-        o, b, i = line
-        b = ' '.join(highlight_bytes(bb) for bb in b.split(' '))
-        i = highlight(i.strip(), PwntoolsLexer(), TerminalFormatter()).strip()
-        i = i.replace(',', ', ')
-        print(o, b, i)
-      else:
-        print(line[0])
-    return
+        def highlight_bytes(t): return ''.join(map(lambda x: x.replace(
+            '00', text.red('00')).replace('0a', text.red('0a')), group(2, t)))
+        for line in lines:
+            if len(line) == 3:
+                o, b, i = line
+                b = ' '.join(highlight_bytes(bb) for bb in b.split(' '))
+                i = highlight(
+                    i.strip(),
+                    PwntoolsLexer(),
+                    TerminalFormatter()).strip()
+                i = i.replace(',', ', ')
+                print(o, b, i)
+            else:
+                print(line[0])
+        return
 
-  print(disasm(dat, vma=safeeval.const(args.address)))
+    print(disasm(dat, vma=safeeval.const(args.address)))
 
 
 if __name__ == '__main__':
-  pwntools.commandline.common.main(__file__)
+    pwntools.commandline.common.main(__file__)

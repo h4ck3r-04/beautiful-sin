@@ -99,46 +99,46 @@ parser.add_argument(
 
 
 def main(args):
-  tty = args.output.isatty()
+    tty = args.output.isatty()
 
-  if args.infile.isatty() and not args.lines:
-    parser.print_usage()
-    sys.exit(1)
+    if args.infile.isatty() and not args.lines:
+        parser.print_usage()
+        sys.exit(1)
 
-  data = '\n'.join(args.lines) or args.infile.read()
-  output = asm(data.replace(';', '\n'))
-  fmt = args.format or ('hex' if tty else 'raw')
-  formatters = {'r': bytes, 'h': enhex, 's': repr}
+    data = '\n'.join(args.lines) or args.infile.read()
+    output = asm(data.replace(';', '\n'))
+    fmt = args.format or ('hex' if tty else 'raw')
+    formatters = {'r': bytes, 'h': enhex, 's': repr}
 
-  if args.avoid:
-    avoid = unhex(''.join(args.avoid))
-    output = encode(output, avoid)
+    if args.avoid:
+        avoid = unhex(''.join(args.avoid))
+        output = encode(output, avoid)
 
-  if args.debug:
-    proc = gdb.debug_shellcode(output, arch=context.arch)
-    proc.interactive()
-    sys.exit(0)
+    if args.debug:
+        proc = gdb.debug_shellcode(output, arch=context.arch)
+        proc.interactive()
+        sys.exit(0)
 
-  if args.run:
-    proc = run_shellcode(output)
-    proc.interactive()
-    sys.exit(0)
+    if args.run:
+        proc = run_shellcode(output)
+        proc.interactive()
+        sys.exit(0)
 
-  if fmt[0] == 'e':
-    args.output.write(make_elf(output))
-    try:
-      os.fchmod(args.output.fileno(), 0o700)
-    except OSError:
-      pass
-  else:
-    output = formatters[fmt[0]](output)
-    if not hasattr(output, 'decode'):
-      output = output.encode('ascii')
-    args.output.write(output)
+    if fmt[0] == 'e':
+        args.output.write(make_elf(output))
+        try:
+            os.fchmod(args.output.fileno(), 0o700)
+        except OSError:
+            pass
+    else:
+        output = formatters[fmt[0]](output)
+        if not hasattr(output, 'decode'):
+            output = output.encode('ascii')
+        args.output.write(output)
 
-  if tty and fmt != 'raw':
-    args.output.write(b'\n')
+    if tty and fmt != 'raw':
+        args.output.write(b'\n')
 
 
 if __name__ == '__main__':
-  pwntools.commandline.common.main(__file__)
+    pwntools.commandline.common.main(__file__)

@@ -1,8 +1,8 @@
 <%
-    from pwntools import shellcraft
-    from pwntools.shellcraft import pretty
-    from pwntools.util.iters import group
-    from pwntools.util.packing import _need_bytes
+    from pwnlib import shellcraft
+    from pwnlib.shellcraft import pretty
+    from pwnlib.util.iters import group
+    from pwnlib.util.packing import _need_bytes
     from six import text_type, binary_type
 %>
 <%docstring>

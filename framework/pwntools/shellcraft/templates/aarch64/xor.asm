@@ -1,10 +1,10 @@
 <%
   import six
-  from pwntools.shellcraft import pretty, common, aarch64, registers
-  from pwntools.shellcraft.registers import aarch64 as regs
-  from pwntools.util.packing import pack, unpack
-  from pwntools.context import context as ctx
-  from pwntools.log import getLogger
+  from pwnlib.shellcraft import pretty, common, aarch64, registers
+  from pwnlib.shellcraft.registers import aarch64 as regs
+  from pwnlib.util.packing import pack, unpack
+  from pwnlib.context import context as ctx
+  from pwnlib.log import getLogger
 %>
 <%page args="key, address, count"/>
 <%docstring>
@@ -30,7 +30,7 @@ Example:
     True
 </%docstring>
 <%
-log = getLogger('pwntools.shellcraft.templates.aarch64.xor')
+log = getLogger('pwnlib.shellcraft.templates.aarch64.xor')
 
 # By default, assume the key is a register
 key_size   = ctx.bytes

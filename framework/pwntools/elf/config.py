@@ -5,108 +5,108 @@ from __future__ import division
 
 
 class KernelConfig(object):
-  def __init__(self, name, title, requires=[],
-               excludes=[], minver=0, maxver=99):
+    def __init__(self, name, title, requires=[],
+                 excludes=[], minver=0, maxver=99):
 
-    #: Name of the configuration option
-    self.name = name
+        #: Name of the configuration option
+        self.name = name
 
-    #: Section to which the configuration point belongs
-    self.title = title
+        #: Section to which the configuration point belongs
+        self.title = title
 
-    #: List of configuration items, one of which must be present,
-    #: for this checker to be used.
-    self.requires = set(requires)
+        #: List of configuration items, one of which must be present,
+        #: for this checker to be used.
+        self.requires = set(requires)
 
-    #: List of configuration items, NONE of which must be present,
-    #: for this checker to be used.
-    self.excludes = set(excludes)
+        #: List of configuration items, NONE of which must be present,
+        #: for this checker to be used.
+        self.excludes = set(excludes)
 
-    #: Kernel version that this check should be enforced on
-    self.minver = list(map(int, str(minver).split('.')))
-    self.maxver = list(map(int, str(maxver).split('.')))
+        #: Kernel version that this check should be enforced on
+        self.minver = list(map(int, str(minver).split('.')))
+        self.maxver = list(map(int, str(maxver).split('.')))
 
-  def relevant(self, config):
+    def relevant(self, config):
 
-    # If any of the excluded options are ENABLED,
-    # this config is not relevant.
-    if self.excludes:
-      for value in self.excludes & set(config):
-        if config.get(value, False):
-          return False
+        # If any of the excluded options are ENABLED,
+        # this config is not relevant.
+        if self.excludes:
+            for value in self.excludes & set(config):
+                if config.get(value, False):
+                    return False
 
-    # If any of the required options are PRESENT but DISABLED,
-    # this config is not relevant.
-    if self.requires:
-      for value in self.requires & set(config):
-        if config.get(value, False):
-          return True
+        # If any of the required options are PRESENT but DISABLED,
+        # this config is not relevant.
+        if self.requires:
+            for value in self.requires & set(config):
+                if config.get(value, False):
+                    return True
 
-      # We did not find a required value
-      return False
+            # We did not find a required value
+            return False
 
-    # If we are not in the correct version range, bail
-    if 'version' in config:
-      version = config['version']
+        # If we are not in the correct version range, bail
+        if 'version' in config:
+            version = config['version']
 
-      if not (self.minver <= version < self.maxver):
-        return False
+            if not (self.minver <= version < self.maxver):
+                return False
 
-    return True
+        return True
 
-  def check(self, value):
-    raise NotImplementedError()
+    def check(self, value):
+        raise NotImplementedError()
 
-  def __call__(self, config):
-    """__call__(config) -> str
+    def __call__(self, config):
+        """__call__(config) -> str
 
-    Check whether the configuration point is set correctly.
+        Check whether the configuration point is set correctly.
 
-    Arguments:
-        config(dict): Dictionary of all configuration points
+        Arguments:
+            config(dict): Dictionary of all configuration points
 
-    Returns:
-        A tuple (result, message) where result is whether the
-        option is correctly configured, and message is an optional
-        message describing the error.
-    """
-    if not self.relevant(config):
-      return (True, '')
-    return self.check(config.get(self.name, None))
+        Returns:
+            A tuple (result, message) where result is whether the
+            option is correctly configured, and message is an optional
+            message describing the error.
+        """
+        if not self.relevant(config):
+            return (True, '')
+        return self.check(config.get(self.name, None))
 
 
 class Enabled(KernelConfig):
-  def __init__(self, name, **kw):
-    super(Enabled, self).__init__(name, 'Not Enabled', **kw)
+    def __init__(self, name, **kw):
+        super(Enabled, self).__init__(name, 'Not Enabled', **kw)
 
-  def check(self, config):
-    return (bool(config), '')
+    def check(self, config):
+        return (bool(config), '')
 
 
 class EnabledIfPresent(Enabled):
-  def check(self, config):
-    if config is None:
-      return (True, '')
-    return super(EnabledIfPresent, self).check(config)
+    def check(self, config):
+        if config is None:
+            return (True, '')
+        return super(EnabledIfPresent, self).check(config)
 
 
 class Disabled(KernelConfig):
-  def __init__(self, name, **kw):
-    super(Disabled, self).__init__(name, 'Not Disabled', **kw)
+    def __init__(self, name, **kw):
+        super(Disabled, self).__init__(name, 'Not Disabled', **kw)
 
-  def check(self, config):
-    return (not bool(config), '')
+    def check(self, config):
+        return (not bool(config), '')
 
 
 class Minimum(KernelConfig):
-  def __init__(self, name, minimum, **kw):
-    super(Minimum, self).__init__(name, 'Misconfigured', **kw)
-    self.minimum = minimum
+    def __init__(self, name, minimum, **kw):
+        super(Minimum, self).__init__(name, 'Misconfigured', **kw)
+        self.minimum = minimum
 
-  def check(self, value):
-    if value is None or value < self.minimum:
-      return (False, "Should be at least {}".format(self.minimum))
-    return (True, '')
+    def check(self, value):
+        if value is None or value < self.minimum:
+            return (False, "Should be at least {}".format(self.minimum))
+        return (True, '')
 
 
 kernel_configuration = [
@@ -216,65 +216,65 @@ kernel_configuration = [
 
 
 def parse_kconfig(data):
-  """Parses configuration data from a kernel .config.
+    """Parses configuration data from a kernel .config.
 
-  Arguments:
-      data(str): Configuration contents.
+    Arguments:
+        data(str): Configuration contents.
 
-  Returns:
-      A :class:`dict`  mapping configuration options.
-      "Not set" is converted into ``None``, ``y`` and ``n`` are converted
-      into :class:`bool`.  Numbers are converted into :class:`int`.
-      All other values are as-is.
-      Each key has ``CONFIG_`` stripped from the beginning.
+    Returns:
+        A :class:`dict`  mapping configuration options.
+        "Not set" is converted into ``None``, ``y`` and ``n`` are converted
+        into :class:`bool`.  Numbers are converted into :class:`int`.
+        All other values are as-is.
+        Each key has ``CONFIG_`` stripped from the beginning.
 
-  Examples:
+    Examples:
 
-      >>> parse_kconfig('FOO=3')
-      {'FOO': 3}
-      >>> parse_kconfig('FOO=y')
-      {'FOO': True}
-      >>> parse_kconfig('FOO=n')
-      {'FOO': False}
-      >>> parse_kconfig('FOO=bar')
-      {'FOO': 'bar'}
-      >>> parse_kconfig('# FOO is not set')
-      {'FOO': None}
-  """
-  config = {}
+        >>> parse_kconfig('FOO=3')
+        {'FOO': 3}
+        >>> parse_kconfig('FOO=y')
+        {'FOO': True}
+        >>> parse_kconfig('FOO=n')
+        {'FOO': False}
+        >>> parse_kconfig('FOO=bar')
+        {'FOO': 'bar'}
+        >>> parse_kconfig('# FOO is not set')
+        {'FOO': None}
+    """
+    config = {}
 
-  NOT_SET = ' is not set'
+    NOT_SET = ' is not set'
 
-  if not data:
-    return
+    if not data:
+        return
 
-  for line in data.splitlines():
+    for line in data.splitlines():
 
-    # Not set? Then set to None.
-    if NOT_SET in line:
-      line = line.split(NOT_SET, 1)[0]
-      name = line.strip('# ')
-      config[name] = None
+        # Not set? Then set to None.
+        if NOT_SET in line:
+            line = line.split(NOT_SET, 1)[0]
+            name = line.strip('# ')
+            config[name] = None
 
-    # Set to a value? Extract it
-    if '=' in line:
-      k, v = line.split('=', 1)
+        # Set to a value? Extract it
+        if '=' in line:
+            k, v = line.split('=', 1)
 
-      # Boolean conversions
-      if v == 'y':
-        v = True
-      elif v == 'n':
-        v = False
-      else:
+            # Boolean conversions
+            if v == 'y':
+                v = True
+            elif v == 'n':
+                v = False
+            else:
 
-        # Integer conversions
-        try:
-          v = int(v, 0)
-        except ValueError:
-          pass
+                # Integer conversions
+                try:
+                    v = int(v, 0)
+                except ValueError:
+                    pass
 
-      config[k] = v
+            config[k] = v
 
-  # Strip off all of the CONFIG_ prefixes
-  config = ({k.replace('CONFIG_', ''): v for k, v in config.items()})
-  return config
+    # Strip off all of the CONFIG_ prefixes
+    config = ({k.replace('CONFIG_', ''): v for k, v in config.items()})
+    return config

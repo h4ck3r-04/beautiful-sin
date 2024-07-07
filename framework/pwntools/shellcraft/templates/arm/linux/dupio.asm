@@ -1,5 +1,5 @@
-<% from pwnlib.shellcraft import common %>
-<% from pwnlib.shellcraft.arm import mov %>
+<% from pwntools.shellcraft import common %>
+<% from pwntools.shellcraft.arm import mov %>
 <%page args="sock = 'r6'"/>
 <%docstring>
 Args: [sock (imm/reg) = r6]

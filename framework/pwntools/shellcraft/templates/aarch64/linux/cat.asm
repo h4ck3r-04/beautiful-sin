@@ -1,5 +1,5 @@
 <%
-  from pwntools import shellcraft
+  from pwnlib import shellcraft
 %>
 <%page args="filename, fd=1"/>
 <%docstring>

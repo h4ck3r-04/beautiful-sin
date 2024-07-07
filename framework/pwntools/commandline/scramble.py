@@ -76,39 +76,39 @@ parser.add_argument(
 
 
 def main(args):
-  tty = args.output.isatty()
+    tty = args.output.isatty()
 
-  if sys.stdin.isatty():
-    parser.print_usage()
-    sys.exit(0)
+    if sys.stdin.isatty():
+        parser.print_usage()
+        sys.exit(0)
 
-  stdin_buffer = getattr(sys.stdin, 'buffer', sys.stdin)
-  output = stdin_buffer.read()
-  fmt = args.format or ('hex' if tty else 'raw')
-  formatters = {'r': bytes, 'h': enhex, 's': repr}
+    stdin_buffer = getattr(sys.stdin, 'buffer', sys.stdin)
+    output = stdin_buffer.read()
+    fmt = args.format or ('hex' if tty else 'raw')
+    formatters = {'r': bytes, 'h': enhex, 's': repr}
 
-  if args.alphanumeric:
-    output = alphanumeric(output)
+    if args.alphanumeric:
+        output = alphanumeric(output)
 
-  if args.avoid:
-    output = avoid(output, ''.join(args.avoid))
+    if args.avoid:
+        output = avoid(output, ''.join(args.avoid))
 
-  if args.debug:
-    proc = gdb.debug_shellcode(output, arch=context.arch)
-    proc.interactive()
-    sys.exit(0)
+    if args.debug:
+        proc = gdb.debug_shellcode(output, arch=context.arch)
+        proc.interactive()
+        sys.exit(0)
 
-  if fmt[0] == 'e':
-    sys.stdout.write(make_elf(output))
-  else:
-    output = formatters[fmt[0]](output)
-    if not hasattr(output, 'decode'):
-      output = output.encode('ascii')
-    args.output.write(output)
+    if fmt[0] == 'e':
+        sys.stdout.write(make_elf(output))
+    else:
+        output = formatters[fmt[0]](output)
+        if not hasattr(output, 'decode'):
+            output = output.encode('ascii')
+        args.output.write(output)
 
-  if tty and fmt != 'raw':
-    args.output.write(b'\n')
+    if tty and fmt != 'raw':
+        args.output.write(b'\n')
 
 
 if __name__ == '__main__':
-  pwntools.commandline.common.main(__file__)
+    pwntools.commandline.common.main(__file__)

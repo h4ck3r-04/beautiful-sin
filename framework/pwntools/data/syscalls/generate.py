@@ -127,172 +127,172 @@ CALL = """
 
 
 def can_be_constant(arg):
-  if arg.derefcnt == 0:
-    return True
+    if arg.derefcnt == 0:
+        return True
 
 
 def can_be_string(arg):
-  if arg.type == 'char' and arg.derefcnt == 1:
-    return True
-  if arg.type == 'void' and arg.derefcnt == 1:
-    return True
+    if arg.type == 'char' and arg.derefcnt == 1:
+        return True
+    if arg.type == 'void' and arg.derefcnt == 1:
+        return True
 
 
 def can_be_array(arg):
-  if arg.type == 'char' and arg.derefcnt == 2:
-    return True
-  if arg.type == 'void' and arg.derefcnt == 2:
-    return True
+    if arg.type == 'char' and arg.derefcnt == 2:
+        return True
+    if arg.type == 'void' and arg.derefcnt == 2:
+        return True
 
 
 def fix_bad_arg_names(func, arg):
-  if arg.name == 'len':
-    return 'length'
+    if arg.name == 'len':
+        return 'length'
 
-  if arg.name in ('str', 'repr') or keyword.iskeyword(arg.name):
-    return arg.name + '_'
+    if arg.name in ('str', 'repr') or keyword.iskeyword(arg.name):
+        return arg.name + '_'
 
-  if func.name == 'open' and arg.name == 'vararg':
-    return 'mode'
+    if func.name == 'open' and arg.name == 'vararg':
+        return 'mode'
 
-  return arg.name
+    return arg.name
 
 
 def get_arg_default(arg):
-  return 0
+    return 0
 
 
 def fix_rt_syscall_name(name):
-  if name.startswith('rt_'):
-    return name[3:]
-  return name
+    if name.startswith('rt_'):
+        return name[3:]
+    return name
 
 
 def fix_syscall_names(name):
-  # Do not use old_mmap
-  if name == 'SYS_mmap':
-    return ['SYS_mmap2', name]
-  # Some arches don't have vanilla sigreturn
-  if name.endswith('_sigreturn'):
-    return ['SYS_sigreturn', 'SYS_rt_sigreturn']
-  return [name]
+    # Do not use old_mmap
+    if name == 'SYS_mmap':
+        return ['SYS_mmap2', name]
+    # Some arches don't have vanilla sigreturn
+    if name.endswith('_sigreturn'):
+        return ['SYS_sigreturn', 'SYS_rt_sigreturn']
+    return [name]
 
 
 def main(target):
-  for arch in ARCHITECTURES:
-    with context.local(arch=arch):
-      generate_one(target)
+    for arch in ARCHITECTURES:
+        with context.local(arch=arch):
+            generate_one(target)
 
 
 def generate_one(target):
-  SYSCALL_NAMES = [c for c in dir(constants) if c.startswith('SYS_')]
+    SYSCALL_NAMES = [c for c in dir(constants) if c.startswith('SYS_')]
 
-  for syscall in SYSCALL_NAMES:
-    name = syscall[4:]
+    for syscall in SYSCALL_NAMES:
+        name = syscall[4:]
 
-    # Skip anything with uppercase
-    if name.lower() != name:
-      print('Skipping %s' % name)
-      continue
+        # Skip anything with uppercase
+        if name.lower() != name:
+            print('Skipping %s' % name)
+            continue
 
-    # Skip anything that starts with 'unused' or 'sys' after stripping
-    if name.startswith('unused'):
-      print('Skipping %s' % name)
-      continue
+        # Skip anything that starts with 'unused' or 'sys' after stripping
+        if name.startswith('unused'):
+            print('Skipping %s' % name)
+            continue
 
-    function = functions.get(name, None)
+        function = functions.get(name, None)
 
-    if name.startswith('rt_'):
-      name = name[3:]
+        if name.startswith('rt_'):
+            name = name[3:]
 
-    # If we can't find a function, just stub it out with something
-    # that has a vararg argument.
-    if function is None:
-      print('Stubbing out %s' % name)
-      args = [Argument('int', 0, 'vararg')]
-      function = Function('long', 0, name, args)
+        # If we can't find a function, just stub it out with something
+        # that has a vararg argument.
+        if function is None:
+            print('Stubbing out %s' % name)
+            args = [Argument('int', 0, 'vararg')]
+            function = Function('long', 0, name, args)
 
-    # Some syscalls have different names on different architectures,
-    # or are superceded.  We try to do the "best" thing at runtime.
-    syscalls = fix_syscall_names(syscall)
+        # Some syscalls have different names on different architectures,
+        # or are superceded.  We try to do the "best" thing at runtime.
+        syscalls = fix_syscall_names(syscall)
 
-    # Set up the argument string for Mako
-    argument_names = []
-    argument_names_ = []
-    argument_defaults = []
+        # Set up the argument string for Mako
+        argument_names = []
+        argument_names_ = []
+        argument_defaults = []
 
-    string_arguments = []
-    array_arguments = []
-    arg_docs = []
+        string_arguments = []
+        array_arguments = []
+        arg_docs = []
 
-    #
+        #
 
-    for arg in function.args:
-      argname_ = fix_bad_arg_names(function, arg)
-      argname = argname_.rstrip('_')
-      default = get_arg_default(arg)
+        for arg in function.args:
+            argname_ = fix_bad_arg_names(function, arg)
+            argname = argname_.rstrip('_')
+            default = get_arg_default(arg)
 
-      if can_be_array(arg):
-        array_arguments.append(argname)
+            if can_be_array(arg):
+                array_arguments.append(argname)
 
-      if can_be_string(arg):
-        string_arguments.append(argname)
+            if can_be_string(arg):
+                string_arguments.append(argname)
 
-      argtype = str(arg.type) + ('*' * arg.derefcnt)
-      arg_docs.append(
-          '    {argname_}({argtype}): {argname}'.format(
-              argname_=argname_,
-              argname=argname,
-              argtype=argtype,
-          ))
+            argtype = str(arg.type) + ('*' * arg.derefcnt)
+            arg_docs.append(
+                '    {argname_}({argtype}): {argname}'.format(
+                    argname_=argname_,
+                    argname=argname,
+                    argtype=argtype,
+                ))
 
-      # Mako is unable to use *vararg and *kwarg, so we just stub in
-      # a whole bunch of additional arguments.
-      if argname == 'vararg':
-        for j in range(6):
-          argname = 'vararg_%i' % j
-          argument_names.append(argname)
-          argument_names_.append(argname)
-          argument_defaults.append('%s=%s' % (argname, None))
-        break
+            # Mako is unable to use *vararg and *kwarg, so we just stub in
+            # a whole bunch of additional arguments.
+            if argname == 'vararg':
+                for j in range(6):
+                    argname = 'vararg_%i' % j
+                    argument_names.append(argname)
+                    argument_names_.append(argname)
+                    argument_defaults.append('%s=%s' % (argname, None))
+                break
 
-      argument_names.append(argname)
-      argument_names_.append(argname_)
-      argument_defaults.append('%s=%s' % (argname_, default))
+            argument_names.append(argname)
+            argument_names_.append(argname_)
+            argument_defaults.append('%s=%s' % (argname_, default))
 
-    arguments_default_values = ', '.join(argument_defaults)
-    arguments_comma_separated = ', '.join(argument_names_)
+        arguments_default_values = ', '.join(argument_defaults)
+        arguments_comma_separated = ', '.join(argument_names_)
 
-    return_type = str(function.type) + ('*' * function.derefcnt)
-    arg_docs = '\n'.join(arg_docs)
+        return_type = str(function.type) + ('*' * function.derefcnt)
+        arg_docs = '\n'.join(arg_docs)
 
-    template_variables = {
-        'name': name,
-        'arg_docs': arg_docs,
-        'syscalls': syscalls,
-        'arguments_default_values': arguments_default_values,
-        'arguments_comma_separated': arguments_comma_separated,
-        'return_type': return_type,
-        'string_arguments': string_arguments,
-        'array_arguments': array_arguments,
-        'argument_names': argument_names,
-    }
+        template_variables = {
+            'name': name,
+            'arg_docs': arg_docs,
+            'syscalls': syscalls,
+            'arguments_default_values': arguments_default_values,
+            'arguments_comma_separated': arguments_comma_separated,
+            'return_type': return_type,
+            'string_arguments': string_arguments,
+            'array_arguments': array_arguments,
+            'argument_names': argument_names,
+        }
 
-    lines = [
-        HEADER,
-        DOCSTRING.format(**template_variables),
-        ARGUMENTS.format(**template_variables),
-        CALL.format(**template_variables)
-    ]
+        lines = [
+            HEADER,
+            DOCSTRING.format(**template_variables),
+            ARGUMENTS.format(**template_variables),
+            CALL.format(**template_variables)
+        ]
 
-    if keyword.iskeyword(name):
-      name += '_'
-    with open(os.path.join(target, name + '.asm'), 'wt') as f:
-      f.write('\n'.join(map(str.strip, lines)) + '\n')
+        if keyword.iskeyword(name):
+            name += '_'
+        with open(os.path.join(target, name + '.asm'), 'wt') as f:
+            f.write('\n'.join(map(str.strip, lines)) + '\n')
 
 
 if __name__ == '__main__':
-  p = argparse.ArgumentParser()
-  p.add_argument('target_directory')
-  args = p.parse_args()
-  main(args.target_directory)
+    p = argparse.ArgumentParser()
+    p.add_argument('target_directory')
+    args = p.parse_args()
+    main(args.target_directory)

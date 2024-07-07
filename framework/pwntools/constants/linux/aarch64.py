@@ -1,4 +1,4 @@
-from pwnlib.constants.constant import Constant
+from pwntools.constants.constant import Constant
 _AARCH64_SYSCALL_H = Constant('_AARCH64_SYSCALL_H', 1)
 __NR_io_setup = Constant('__NR_io_setup', 0)
 __NR_io_destroy = Constant('__NR_io_destroy', 1)

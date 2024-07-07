@@ -1,4 +1,4 @@
-<% from pwntools.shellcraft import aarch64 %>
+<% from pwnlib.shellcraft import aarch64 %>
 <%page args="string, sock = '1'"/>
 <%docstring>
 Writes a string to a file descriptor

@@ -1,4 +1,4 @@
-from pwnlib.constants.constant import Constant
+from pwntools.constants.constant import Constant
 ITIMER_REAL = Constant('ITIMER_REAL', 0)
 ITIMER_VIRTUAL = Constant('ITIMER_VIRTUAL', 1)
 ITIMER_PROF = Constant('ITIMER_PROF', 2)

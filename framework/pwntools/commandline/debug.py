@@ -53,56 +53,59 @@ parser.add_argument(
 
 
 def main(args):
-  gdbscript = ''
-  if args.x:
-    gdbscript = args.x.read()
+    gdbscript = ''
+    if args.x:
+        gdbscript = args.x.read()
 
-  if context.os == 'android':
-    context.device = adb.wait_for_device()
-
-  if args.executable:
-    if os.path.exists(args.executable):
-      context.binary = ELF(args.executable)
-      target = context.binary.path
-
-    # This path does nothing, but avoids the "print_usage()"
-    # path below.
-    elif context.os == 'android':
-      target = args.executable
-  elif args.pid:
-    target = int(args.pid)
-  elif args.process:
     if context.os == 'android':
-      target = adb.pidof(args.process)
+        context.device = adb.wait_for_device()
+
+    if args.executable:
+        if os.path.exists(args.executable):
+            context.binary = ELF(args.executable)
+            target = context.binary.path
+
+        # This path does nothing, but avoids the "print_usage()"
+        # path below.
+        elif context.os == 'android':
+            target = args.executable
+    elif args.pid:
+        target = int(args.pid)
+    elif args.process:
+        if context.os == 'android':
+            target = adb.pidof(args.process)
+        else:
+            target = pidof(args.process)
+
+        # pidof() returns a list
+        if not target:
+            log.error("Could not find a PID for %r", args.process)
+
+        target = target[0]
+
+        # pidof will sometimes return all PIDs, including init
+        if target == 1:
+            log.error(
+                "Got PID 1 from pidof.  Check the process name, or use --pid 1 to debug init")
     else:
-      target = pidof(args.process)
+        parser.print_usage()
+        return 1
 
-    # pidof() returns a list
-    if not target:
-      log.error("Could not find a PID for %r", args.process)
+    if args.pid or args.process:
+        pid = gdb.attach(target, gdbscript=gdbscript, sysroot=args.sysroot)
 
-    target = target[0]
-
-    # pidof will sometimes return all PIDs, including init
-    if target == 1:
-      log.error(
-          "Got PID 1 from pidof.  Check the process name, or use --pid 1 to debug init")
-  else:
-    parser.print_usage()
-    return 1
-
-  if args.pid or args.process:
-    pid = gdb.attach(target, gdbscript=gdbscript, sysroot=args.sysroot)
-
-    # Since we spawned the gdbserver process, and process registers an
-    # atexit handler to close itself, gdbserver will be terminated when
-    # we exit.  This will manifest as a "remote connected ended" or
-    # similar error message.  Hold it open for the user.
-    log.info("GDB connection forwarding will terminate when you press enter")
-    pause()
-  else:
-    gdb.debug(target, gdbscript=gdbscript, sysroot=args.sysroot).interactive()
+        # Since we spawned the gdbserver process, and process registers an
+        # atexit handler to close itself, gdbserver will be terminated when
+        # we exit.  This will manifest as a "remote connected ended" or
+        # similar error message.  Hold it open for the user.
+        log.info("GDB connection forwarding will terminate when you press enter")
+        pause()
+    else:
+        gdb.debug(
+            target,
+            gdbscript=gdbscript,
+            sysroot=args.sysroot).interactive()
 
 
 if __name__ == '__main__':
-  pwntools.commandline.common.main(__file__)
+    pwntools.commandline.common.main(__file__)

@@ -1,6 +1,6 @@
 <%
-    from pwntools.shellcraft.aarch64.linux import getppid, kill
-    from pwntools.shellcraft.common import label
+    from pwnlib.shellcraft.aarch64.linux import getppid, kill
+    from pwnlib.shellcraft.common import label
 %>
 <%docstring>
 Kills its parent process until whatever the parent is (probably init)

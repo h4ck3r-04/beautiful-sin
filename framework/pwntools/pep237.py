@@ -7,14 +7,14 @@
 # https://www.python.org/dev/peps/pep-0237/
 # https://mail.python.org/pipermail/python-dev/2006-June/065918.html
 #
-import six
+from six.moves import builtins
 
-original_hex = six.moves.builtins.hex
+original_hex = builtins.hex
 
 
 def hex(number):
-  original_hex.__doc__
-  return original_hex(number).rstrip('L')
+    original_hex.__doc__
+    return original_hex(number).rstrip('L')
 
 
-six.moves.builtins.hex = hex
+builtins.hex = hex

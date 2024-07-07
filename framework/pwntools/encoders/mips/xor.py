@@ -99,40 +99,40 @@ decoders = {
 
 
 class MipsXorEncoder(Encoder):
-  r"""Generates an XOR decoder for MIPS.
+    r"""Generates an XOR decoder for MIPS.
 
-  >>> context.clear(arch='mips')
-  >>> shellcode = asm(shellcraft.sh())
-  >>> avoid = b'/bin/sh\x00'
-  >>> encoded = pwntools.encoders.mips.xor.encode(shellcode, avoid)
-  >>> assert not any(c in encoded for c in avoid)
-  >>> p = run_shellcode(encoded)
-  >>> p.sendline(b'echo hello; exit')
-  >>> p.recvline()
-  b'hello\n'
-  """
+    >>> context.clear(arch='mips')
+    >>> shellcode = asm(shellcraft.sh())
+    >>> avoid = b'/bin/sh\x00'
+    >>> encoded = pwntools.encoders.mips.xor.encode(shellcode, avoid)
+    >>> assert not any(c in encoded for c in avoid)
+    >>> p = run_shellcode(encoded)
+    >>> p.sendline(b'echo hello; exit')
+    >>> p.recvline()
+    b'hello\n'
+    """
 
-  arch = 'mips'
-  blacklist = cannot_avoid = set(b''.join(v for v in decoders.values()))
+    arch = 'mips'
+    blacklist = cannot_avoid = set(b''.join(v for v in decoders.values()))
 
-  def __call__(self, raw_bytes, avoid, pcreg=''):
+    def __call__(self, raw_bytes, avoid, pcreg=''):
 
-    assert 0 == len(raw_bytes) % context.bytes, "Payload is not aligned"
+        assert 0 == len(raw_bytes) % context.bytes, "Payload is not aligned"
 
-    size = (len(raw_bytes) // 4) + 1
-    assert size < 0x10000, "Payload is too long"
+        size = (len(raw_bytes) // 4) + 1
+        assert size < 0x10000, "Payload is too long"
 
-    size = size ^ 0xffff
-    sizelo = size & 0xff
-    sizehi = size >> 8
+        size = size ^ 0xffff
+        sizelo = size & 0xff
+        sizehi = size >> 8
 
-    decoder = decoders[context.endian]
-    decoder = decoder.replace(b'SIZ1', six.int2byte(sizehi))
-    decoder = decoder.replace(b'SIZ2', six.int2byte(sizelo))
+        decoder = decoders[context.endian]
+        decoder = decoder.replace(b'SIZ1', six.int2byte(sizehi))
+        decoder = decoder.replace(b'SIZ2', six.int2byte(sizelo))
 
-    key, data = xor_key(raw_bytes, avoid=avoid)
+        key, data = xor_key(raw_bytes, avoid=avoid)
 
-    return decoder + key + data
+        return decoder + key + data
 
 
 encode = MipsXorEncoder()

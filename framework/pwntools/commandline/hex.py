@@ -34,23 +34,23 @@ parser.add_argument(
 
 
 def format_hex(hex_string, prefix, separator):
-  return separator.join([prefix + x for x in group(2, hex_string)])
+    return separator.join([prefix + x for x in group(2, hex_string)])
 
 
 def main(args):
-  if not args.data:
-    encoded = enhex(getattr(sys.stdin, 'buffer', sys.stdin).read())
-  else:
-    data = ' '.join(args.data)
-    if not hasattr(data, 'decode'):
-      data = data.encode('utf-8', 'surrogateescape')
-    encoded = enhex(data)
+    if not args.data:
+        encoded = enhex(getattr(sys.stdin, 'buffer', sys.stdin).read())
+    else:
+        data = ' '.join(args.data)
+        if not hasattr(data, 'decode'):
+            data = data.encode('utf-8', 'surrogateescape')
+        encoded = enhex(data)
 
-  if args.prefix or args.separator:
-    encoded = format_hex(encoded, args.prefix, args.separator)
+    if args.prefix or args.separator:
+        encoded = format_hex(encoded, args.prefix, args.separator)
 
-  print(encoded)
+    print(encoded)
 
 
 if __name__ == '__main__':
-  common.main(__file__)
+    common.main(__file__)

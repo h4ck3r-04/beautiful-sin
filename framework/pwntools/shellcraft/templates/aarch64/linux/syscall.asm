@@ -1,7 +1,7 @@
 <%
-  from pwntools.shellcraft import aarch64, pretty
-  from pwntools.constants import eval
-  from pwntools.abi import linux_aarch64_syscall as abi
+  from pwnlib.shellcraft import aarch64, pretty
+  from pwnlib.constants import eval
+  from pwnlib.abi import linux_aarch64_syscall as abi
   from six import text_type
 %>
 <%page args="syscall = None, arg0 = None, arg1 = None, arg2 = None, arg3 = None, arg4 = None, arg5 = None, arg6 = None"/>
@@ -9,7 +9,7 @@
 Args: [syscall_number, \*args]
     Does a syscall
 
-Any of the arguments can be expressions to be evaluated by :func:`pwntools.constants.eval`.
+Any of the arguments can be expressions to be evaluated by :func:`pwnlib.constants.eval`.
 
 Example:
 
@@ -26,7 +26,7 @@ Example:
         mov  x0, xzr
         mov  x8, #SYS_exit
         svc 0
-    >>> print(pwntools.shellcraft.openat(-2, '/home/pwn/flag').rstrip())
+    >>> print(pwnlib.shellcraft.openat(-2, '/home/pwn/flag').rstrip())
         /* openat(fd=-2, file='/home/pwn/flag', oflag=0) */
         /* push b'/home/pwn/flag\x00' */
         /* Set x14 = 8606431000579237935 = 0x77702f656d6f682f */

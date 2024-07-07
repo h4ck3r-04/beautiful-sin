@@ -19,11 +19,11 @@ parser.add_argument(
 
 
 def main(args):
-  for f in args.elf:
-    e = ELF(f.name)
-    e.disable_nx()
-    ELF(e.path)
+    for f in args.elf:
+        e = ELF(f.name)
+        e.disable_nx()
+        ELF(e.path)
 
 
 if __name__ == '__main__':
-  pwntools.commandline.common.main(__file__)
+    pwnlib.commandline.common.main(__file__)

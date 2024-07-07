@@ -23,18 +23,18 @@ p.add_argument('bytes', help='Bytes to patch (hex encoded)')
 
 
 def main(a):
-  if not a.offset.startswith('0x'):
-    a.offset = '0x' + a.offset
+    if not a.offset.startswith('0x'):
+        a.offset = '0x' + a.offset
 
-  offset = int(a.offset, 16)
-  bytes = unhex(a.bytes)
+    offset = int(a.offset, 16)
+    bytes = unhex(a.bytes)
 
-  with context.silent:
-    elf = ELF(a.elf)
+    with context.silent:
+        elf = ELF(a.elf)
 
-  elf.write(offset, bytes)
-  getattr(sys.stdout, 'buffer', sys.stdout).write(elf.get_data())
+    elf.write(offset, bytes)
+    getattr(sys.stdout, 'buffer', sys.stdout).write(elf.get_data())
 
 
 if __name__ == '__main__':
-  pwntools.commandline.common.main(__file__)
+    pwntools.commandline.common.main(__file__)

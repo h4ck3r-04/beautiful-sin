@@ -1,10 +1,10 @@
 <%
-    from pwntools.shellcraft.aarch64.linux import exit as exit
-    from pwntools.shellcraft.aarch64.linux import mmap
-    from pwntools.shellcraft.aarch64 import setregs, mov, memcpy
+    from pwnlib.shellcraft.aarch64.linux import exit as exit
+    from pwnlib.shellcraft.aarch64.linux import mmap
+    from pwnlib.shellcraft.aarch64 import setregs, mov, memcpy
 
-    from pwntools.shellcraft import common
-    from pwntools.util.packing import unpack
+    from pwnlib.shellcraft import common
+    from pwnlib.util.packing import unpack
 %>
 <%page args="address"/>
 <%docstring>

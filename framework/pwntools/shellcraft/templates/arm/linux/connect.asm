@@ -1,8 +1,8 @@
 <%
- from pwnlib.shellcraft.arm import push, mov, pushstr
- from pwnlib.shellcraft.arm.linux import syscall
- from pwnlib.constants import SOCK_STREAM, SYS_socket, SYS_connect
- from pwnlib.util.net import sockaddr
+ from pwntools.shellcraft.arm import push, mov, pushstr
+ from pwntools.shellcraft.arm.linux import syscall
+ from pwntools.constants import SOCK_STREAM, SYS_socket, SYS_connect
+ from pwntools.util.net import sockaddr
 %>
 <%page args="host, port, network='ipv4'"/>
 <%docstring>

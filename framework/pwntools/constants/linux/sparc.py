@@ -1,4 +1,4 @@
-from pwnlib.constants.constant import Constant
+from pwntools.constants.constant import Constant
 __NR_exit = Constant('__NR_exit', 1)
 __NR_fork = Constant('__NR_fork', 2)
 __NR_read = Constant('__NR_read', 3)

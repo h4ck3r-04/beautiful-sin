@@ -1,7 +1,7 @@
 <% import six %>
-<% from pwnlib.shellcraft.arm import mov %>
-<% from pwnlib.util.packing import unpack %>
-<% from pwnlib import constants %>
+<% from pwntools.shellcraft.arm import mov %>
+<% from pwntools.util.packing import unpack %>
+<% from pwntools import constants %>
 <%page args="egg, start_address = 0, double_check = True"/>
 <%docstring>
     egghunter(egg, start_address = 0, double_check = True)

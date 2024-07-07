@@ -35,36 +35,36 @@ p.add_argument('file', type=argparse.FileType('rb'))
 
 
 def main(args):
-  if not (args.patch or args.build_id):
-    sys.stderr.write("Must specify at least one action\n")
-    sys.stderr.write(p.format_usage())
-    sys.exit(0)
+    if not (args.patch or args.build_id):
+        sys.stderr.write("Must specify at least one action\n")
+        sys.stderr.write(p.format_usage())
+        sys.exit(0)
 
-  elf = ELF(args.file.name)
-  context.clear(arch=elf.arch)
+    elf = ELF(args.file.name)
+    context.clear(arch=elf.arch)
 
-  if args.build_id:
-    for offset in pwntools.libcdb.get_build_id_offsets():
-      data = elf.read(elf.address + offset + 0xC, 4)
-      if data == 'GNU\x00':
-        elf.write(elf.address + offset + 0x10, os.urandom(20))
+    if args.build_id:
+        for offset in pwntools.libcdb.get_build_id_offsets():
+            data = elf.read(elf.address + offset + 0xC, 4)
+            if data == 'GNU\x00':
+                elf.write(elf.address + offset + 0x10, os.urandom(20))
 
-  for function in args.patch:
-    if function not in elf.symbols:
-      log.error("Could not find function %r" % function)
+    for function in args.patch:
+        if function not in elf.symbols:
+            log.error("Could not find function %r" % function)
 
-    trap = asm(shellcraft.trap())
-    offset = elf.symbols[function]
+        trap = asm(shellcraft.trap())
+        offset = elf.symbols[function]
 
-    elf.write(elf.address + offset, trap)
+        elf.write(elf.address + offset, trap)
 
-  result = elf.data
+    result = elf.data
 
-  if args.output.isatty():
-    result = enhex(result).encode('ascii')
+    if args.output.isatty():
+        result = enhex(result).encode('ascii')
 
-  args.output.write(result)
+    args.output.write(result)
 
 
 if __name__ == '__main__':
-  pwntools.commandline.common.main(__file__)
+    pwntools.commandline.common.main(__file__)

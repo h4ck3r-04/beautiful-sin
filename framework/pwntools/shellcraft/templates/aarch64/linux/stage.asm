@@ -1,8 +1,8 @@
 <%
 import six
-from pwntools.shellcraft.aarch64 import mov
-from pwntools.shellcraft.aarch64.linux import read, readn, mmap
-from pwntools import constants as C
+from pwnlib.shellcraft.aarch64 import mov
+from pwnlib.shellcraft.aarch64.linux import read, readn, mmap
+from pwnlib import constants as C
 %>
 <%page args="fd=0, length=None"/>
 <%docstring>

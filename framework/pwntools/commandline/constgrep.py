@@ -60,79 +60,85 @@ p.add_argument(
 
 
 def main(args):
-  if args.exact:
-    # This is the simple case
-    print(cpp(args.regex).strip())
-  else:
-    # New we search in the right module.
-    # But first: We find the right module
-    if context.os == 'freebsd':
-      mod = constants.freebsd
+    if args.exact:
+        # This is the simple case
+        print(cpp(args.regex).strip())
     else:
-      mod = getattr(getattr(constants, context.os), context.arch)
-
-    # Compile the given regex, for optimized lookup
-    if args.case_insensitive:
-      matcher = re.compile(args.regex, re.IGNORECASE)
-    else:
-      matcher = re.compile(args.regex)
-
-    # The found matching constants and the length of the longest string
-    out = []
-    maxlen = 0
-
-    constant = args.constant
-
-    for k in dir(mod):
-      # No python stuff
-      if k.endswith('__') and k.startswith('__'):
-        continue
-
-      # Run the regex
-      if not matcher.search(k):
-        continue
-
-      # Check if the value has proper type
-      val = getattr(mod, k)
-      if not isinstance(val, pwntools.constants.constant.Constant):
-        continue
-
-      # Check the constant
-      if constant is not None:
-        if args.mask_mode:
-          if constant & val != val:
-            continue
+        # New we search in the right module.
+        # But first: We find the right module
+        if context.os == 'freebsd':
+            mod = constants.freebsd
         else:
-          if constant != val:
-            continue
+            mod = getattr(getattr(constants, context.os), context.arch)
 
-      # Append it
-      out.append((val, k))
-      maxlen = max(len(k), maxlen)
+        # Compile the given regex, for optimized lookup
+        if args.case_insensitive:
+            matcher = re.compile(args.regex, re.IGNORECASE)
+        else:
+            matcher = re.compile(args.regex)
 
-    # Output all matching constants
-    for _, k in sorted(out):
-      print('#define %s %s' % (k.ljust(maxlen), cpp(k).strip()))
+        # The found matching constants and the length of the longest string
+        out = []
+        maxlen = 0
 
-    # If we are in match_mode, then try to find a combination of
-    # constants that yield the exact given value
-    # We do not want to find combinations using the value 0.
-    if constant and args.mask_mode:
-      mask = constant
-      good = []
-      out = [(v, k) for v, k in out if v != 0]
+        constant = args.constant
 
-      while mask and out:
-        cur = out.pop()
-        mask &= ~cur[0]
-        good.append(cur)
+        for k in dir(mod):
+            # No python stuff
+            if k.endswith('__') and k.startswith('__'):
+                continue
 
-        out = [(v, k) for v, k in out if mask & v == v]
+            # Run the regex
+            if not matcher.search(k):
+                continue
 
-      if functools.reduce(lambda x, cur: x | cur[0], good, 0) == constant:
-        print('')
-        print('(%s) == %s' % (' | '.join(k for v, k in good), args.constant))
+            # Check if the value has proper type
+            val = getattr(mod, k)
+            if not isinstance(val, pwntools.constants.constant.Constant):
+                continue
+
+            # Check the constant
+            if constant is not None:
+                if args.mask_mode:
+                    if constant & val != val:
+                        continue
+                else:
+                    if constant != val:
+                        continue
+
+            # Append it
+            out.append((val, k))
+            maxlen = max(len(k), maxlen)
+
+        # Output all matching constants
+        for _, k in sorted(out):
+            print('#define %s %s' % (k.ljust(maxlen), cpp(k).strip()))
+
+        # If we are in match_mode, then try to find a combination of
+        # constants that yield the exact given value
+        # We do not want to find combinations using the value 0.
+        if constant and args.mask_mode:
+            mask = constant
+            good = []
+            out = [(v, k) for v, k in out if v != 0]
+
+            while mask and out:
+                cur = out.pop()
+                mask &= ~cur[0]
+                good.append(cur)
+
+                out = [(v, k) for v, k in out if mask & v == v]
+
+            if functools.reduce(lambda x, cur: x |
+                                cur[0], good, 0) == constant:
+                print('')
+                print(
+                    '(%s) == %s' %
+                    (' | '.join(
+                        k for v,
+                        k in good),
+                        args.constant))
 
 
 if __name__ == '__main__':
-  pwntools.commandline.common.main(__file__)
+    pwntools.commandline.common.main(__file__)

@@ -138,131 +138,140 @@ common_symbols = ['dup2', 'printf', 'puts', 'read', 'system', 'write']
 
 
 def find_libc(params):
-  import requests
-  url = "https://libc.rip/api/find"
-  result = requests.post(url, json=params, timeout=20)
-  log.debug('Request: %s', params)
-  log.debug('Result: %s', result.json())
-  if result.status_code != 200 or len(result.json()) == 0:
-    log.failure("Could not find libc for %s on libc.rip", params)
-    return []
+    import requests
+    url = "https://libc.rip/api/find"
+    result = requests.post(url, json=params, timeout=20)
+    log.debug('Request: %s', params)
+    log.debug('Result: %s', result.json())
+    if result.status_code != 200 or len(result.json()) == 0:
+        log.failure("Could not find libc for %s on libc.rip", params)
+        return []
 
-  return result.json()
+    return result.json()
 
 
 def print_libc(libc):
-  log.info('%s', text.red(libc['id']))
-  log.indented('\t%-20s %s', text.green('BuildID:'), libc['buildid'])
-  log.indented('\t%-20s %s', text.green('MD5:'), libc['md5'])
-  log.indented('\t%-20s %s', text.green('SHA1:'), libc['sha1'])
-  log.indented('\t%-20s %s', text.green('SHA256:'), libc['sha256'])
-  log.indented('\t%s', text.green('Symbols:'))
-  for symbol in libc['symbols'].items():
-    log.indented('\t%25s = %s', symbol[0], symbol[1])
+    log.info('%s', text.red(libc['id']))
+    log.indented('\t%-20s %s', text.green('BuildID:'), libc['buildid'])
+    log.indented('\t%-20s %s', text.green('MD5:'), libc['md5'])
+    log.indented('\t%-20s %s', text.green('SHA1:'), libc['sha1'])
+    log.indented('\t%-20s %s', text.green('SHA256:'), libc['sha256'])
+    log.indented('\t%s', text.green('Symbols:'))
+    for symbol in libc['symbols'].items():
+        log.indented('\t%25s = %s', symbol[0], symbol[1])
 
 
 def handle_remote_libc(args, libc):
-  print_libc(libc)
-  if args.download_libc:
-    path = libcdb.search_by_build_id(libc['buildid'], args.unstrip)
-    if path:
-      if args.unstrip:
-        libcdb.unstrip_libc(path)
-      shutil.copy(path, './{}.so'.format(libc['id']))
+    print_libc(libc)
+    if args.download_libc:
+        path = libcdb.search_by_build_id(libc['buildid'], args.unstrip)
+        if path:
+            if args.unstrip:
+                libcdb.unstrip_libc(path)
+            shutil.copy(path, './{}.so'.format(libc['id']))
 
 
 def translate_offset(offs, args, exe):
-  if args.offset:
-    if args.offset not in exe.symbols:
-      log.info_once('offset symbol %s not found. ignoring.', args.offset)
-      return offs
-    return offs - exe.symbols[args.offset]
-  return offs
+    if args.offset:
+        if args.offset not in exe.symbols:
+            log.info_once('offset symbol %s not found. ignoring.', args.offset)
+            return offs
+        return offs - exe.symbols[args.offset]
+    return offs
 
 
 def collect_synthetic_symbols(exe):
-  available_symbols = []
-  try:
-    exe.symbols['str_bin_sh'] = next(exe.search(b'/bin/sh\x00'))
-    available_symbols.append('str_bin_sh')
-  except StopIteration:
-    pass
+    available_symbols = []
+    try:
+        exe.symbols['str_bin_sh'] = next(exe.search(b'/bin/sh\x00'))
+        available_symbols.append('str_bin_sh')
+    except StopIteration:
+        pass
 
-  libc_start_main_return = exe.libc_start_main_return
-  if libc_start_main_return > 0:
-    exe.symbols['__libc_start_main_ret'] = libc_start_main_return
-    available_symbols.append('__libc_start_main_ret')
+    libc_start_main_return = exe.libc_start_main_return
+    if libc_start_main_return > 0:
+        exe.symbols['__libc_start_main_ret'] = libc_start_main_return
+        available_symbols.append('__libc_start_main_ret')
 
-  return available_symbols
+    return available_symbols
 
 
 def main(args):
-  if len(sys.argv) < 3:
-    parser.print_usage()
-    sys.exit()
+    if len(sys.argv) < 3:
+        parser.print_usage()
+        sys.exit()
 
-  if args.libc_command == 'lookup':
-    pairs = args.symbol_offset_pairs
-    if len(pairs) % 2 != 0:
-      log.failure(
-          'Uneven number of arguments. Please provide "symbol offset" pairs')
-      return
+    if args.libc_command == 'lookup':
+        pairs = args.symbol_offset_pairs
+        if len(pairs) % 2 != 0:
+            log.failure(
+                'Uneven number of arguments. Please provide "symbol offset" pairs')
+            return
 
-    symbols = {pairs[i]: pairs[i + 1] for i in range(0, len(pairs), 2)}
-    matched_libcs = find_libc({'symbols': symbols})
-    for libc in matched_libcs:
-      handle_remote_libc(args, libc)
+        symbols = {pairs[i]: pairs[i + 1] for i in range(0, len(pairs), 2)}
+        matched_libcs = find_libc({'symbols': symbols})
+        for libc in matched_libcs:
+            handle_remote_libc(args, libc)
 
-  elif args.libc_command == 'hash':
-    for hash_value in args.hash_value:
-      matched_libcs = find_libc({args.hash_type: hash_value})
-      for libc in matched_libcs:
-        handle_remote_libc(args, libc)
+    elif args.libc_command == 'hash':
+        for hash_value in args.hash_value:
+            matched_libcs = find_libc({args.hash_type: hash_value})
+            for libc in matched_libcs:
+                handle_remote_libc(args, libc)
 
-  elif args.libc_command == 'file':
-    from hashlib import md5, sha1, sha256
-    for file in args.files:
-      if not os.path.exists(file) or not os.path.isfile(file):
-        log.failure('File does not exist %s', args.file)
-        continue
+    elif args.libc_command == 'file':
+        from hashlib import md5, sha1, sha256
+        for file in args.files:
+            if not os.path.exists(file) or not os.path.isfile(file):
+                log.failure('File does not exist %s', args.file)
+                continue
 
-      if args.unstrip:
-        libcdb.unstrip_libc(file)
+            if args.unstrip:
+                libcdb.unstrip_libc(file)
 
-      exe = ELF(file, checksec=False)
-      log.info('%s', text.red(os.path.basename(file)))
+            exe = ELF(file, checksec=False)
+            log.info('%s', text.red(os.path.basename(file)))
 
-      libc_version = re.search(br'libc[ -](\d+\.\d+)', exe.data)
-      if libc_version:
-        log.indented(
-            '%-20s %s',
-            text.green('Version:'),
-            libc_version.group(1).decode())
+            libc_version = re.search(br'libc[ -](\d+\.\d+)', exe.data)
+            if libc_version:
+                log.indented(
+                    '%-20s %s',
+                    text.green('Version:'),
+                    libc_version.group(1).decode())
 
-      if exe.buildid:
-        log.indented('%-20s %s', text.green('BuildID:'), enhex(exe.buildid))
-      log.indented('%-20s %s', text.green('MD5:'), md5(exe.data).hexdigest())
-      log.indented('%-20s %s', text.green('SHA1:'), sha1(exe.data).hexdigest())
-      log.indented(
-          '%-20s %s',
-          text.green('SHA256:'),
-          sha256(
-              exe.data).hexdigest())
+            if exe.buildid:
+                log.indented(
+                    '%-20s %s',
+                    text.green('BuildID:'),
+                    enhex(
+                        exe.buildid))
+            log.indented('%-20s %s', text.green('MD5:'),
+                         md5(exe.data).hexdigest())
+            log.indented(
+                '%-20s %s',
+                text.green('SHA1:'),
+                sha1(
+                    exe.data).hexdigest())
+            log.indented(
+                '%-20s %s',
+                text.green('SHA256:'),
+                sha256(
+                    exe.data).hexdigest())
 
-      # Always dump the basic list of common symbols
-      log.indented('%s', text.green('Symbols:'))
-      synthetic_symbols = collect_synthetic_symbols(exe)
+            # Always dump the basic list of common symbols
+            log.indented('%s', text.green('Symbols:'))
+            synthetic_symbols = collect_synthetic_symbols(exe)
 
-      symbols = common_symbols + (args.symbols or []) + synthetic_symbols
-      symbols.sort()
-      for symbol in symbols:
-        if symbol not in exe.symbols:
-          log.indented('%25s = %s', symbol, text.red('not found'))
-        else:
-          log.indented(
-              '%25s = %#x', symbol, translate_offset(
-                  exe.symbols[symbol], args, exe))
+            symbols = common_symbols + (args.symbols or []) + synthetic_symbols
+            symbols.sort()
+            for symbol in symbols:
+                if symbol not in exe.symbols:
+                    log.indented('%25s = %s', symbol, text.red('not found'))
+                else:
+                    log.indented(
+                        '%25s = %#x', symbol, translate_offset(
+                            exe.symbols[symbol], args, exe))
 
 
 if __name__ == '__main__':
-  pwntools.commandline.common.main(__file__)
+    pwntools.commandline.common.main(__file__)

@@ -61,52 +61,53 @@ group.add_argument(
 
 
 def main(args):
-  alphabet = args.alphabet
-  subsize = args.length
+    alphabet = args.alphabet
+    subsize = args.length
 
-  if args.lookup:
-    pat = args.lookup
+    if args.lookup:
+        pat = args.lookup
 
-    if six.PY3:
-      pat = bytes(pat, encoding='utf-8')
+        if six.PY3:
+            pat = bytes(pat, encoding='utf-8')
 
-    try:
-      pat = int(pat, 0)
-      pat = pack(pat, 'all')
-    except ValueError:
-      pass
-    pat = flat(pat, bytes=args.length)
+        try:
+            pat = int(pat, 0)
+            pat = pack(pat, 'all')
+        except ValueError:
+            pass
+        pat = flat(pat, bytes=args.length)
 
-    if len(pat) < subsize:
-      log.critical('Subpattern must be at least %d bytes' % subsize)
-      sys.exit(1)
+        if len(pat) < subsize:
+            log.critical('Subpattern must be at least %d bytes' % subsize)
+            sys.exit(1)
+        else:
+            pat = pat[:subsize]
+
+        if not all(c in alphabet for c in pat):
+            log.critical(
+                'Pattern contains characters not present in the alphabet')
+            sys.exit(1)
+
+        offset = cyclic_find(pat, alphabet, subsize)
+
+        if offset == -1:
+            log.critical('Given pattern does not exist in cyclic pattern')
+            sys.exit(1)
+        else:
+            print(offset)
     else:
-      pat = pat[:subsize]
+        want = args.count
+        result = cyclic(want, alphabet, subsize)
+        got = len(result)
+        if want is not None and got < want:
+            log.failure("Alphabet too small (max length = %i)" % got)
 
-    if not all(c in alphabet for c in pat):
-      log.critical('Pattern contains characters not present in the alphabet')
-      sys.exit(1)
+        out = getattr(sys.stdout, 'buffer', sys.stdout)
+        out.write(result)
 
-    offset = cyclic_find(pat, alphabet, subsize)
-
-    if offset == -1:
-      log.critical('Given pattern does not exist in cyclic pattern')
-      sys.exit(1)
-    else:
-      print(offset)
-  else:
-    want = args.count
-    result = cyclic(want, alphabet, subsize)
-    got = len(result)
-    if want is not None and got < want:
-      log.failure("Alphabet too small (max length = %i)" % got)
-
-    out = getattr(sys.stdout, 'buffer', sys.stdout)
-    out.write(result)
-
-    if out.isatty():
-      out.write(b'\n')
+        if out.isatty():
+            out.write(b'\n')
 
 
 if __name__ == '__main__':
-  pwntools.commandline.common.main(__file__)
+    pwntools.commandline.common.main(__file__)

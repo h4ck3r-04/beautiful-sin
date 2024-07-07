@@ -1,7 +1,7 @@
 <%
-    from pwntools.shellcraft.aarch64.linux import read
-    from pwntools.shellcraft.aarch64 import setregs
-    from pwntools.shellcraft import common
+    from pwnlib.shellcraft.aarch64.linux import read
+    from pwnlib.shellcraft.aarch64 import setregs
+    from pwnlib.shellcraft import common
 %>
 <%page args="fd, buf, nbytes"/>
 <%docstring>

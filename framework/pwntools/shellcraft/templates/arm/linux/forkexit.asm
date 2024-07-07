@@ -1,6 +1,6 @@
 <%
-    from pwnlib.shellcraft import common
-    from pwnlib.shellcraft.arm.linux import fork, exit
+    from pwntools.shellcraft import common
+    from pwntools.shellcraft.arm.linux import fork, exit
 %>
 <%page args=""/>
 <%docstring>

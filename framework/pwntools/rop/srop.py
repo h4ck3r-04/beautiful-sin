@@ -258,220 +258,220 @@ syscall_instructions = {
 
 
 class SigreturnFrame(dict):
-  r"""
-  Crafts a sigreturn frame with values that are loaded up into
-  registers.
+    r"""
+    Crafts a sigreturn frame with values that are loaded up into
+    registers.
 
-  Arguments:
-      arch(str):
-          The architecture. Currently ``i386`` and ``amd64`` are
-          supported.
+    Arguments:
+        arch(str):
+            The architecture. Currently ``i386`` and ``amd64`` are
+            supported.
 
-  Examples:
+    Examples:
 
-      Crafting a SigreturnFrame that calls mprotect on amd64
+        Crafting a SigreturnFrame that calls mprotect on amd64
 
-      >>> context.clear(arch='amd64')
-      >>> s = SigreturnFrame()
-      >>> unpack_many(bytes(s))
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 51, 0, 0, 0, 0, 0, 0, 0]
-      >>> assert len(s) == 248
-      >>> s.rax = 0xa
-      >>> s.rdi = 0x00601000
-      >>> s.rsi = 0x1000
-      >>> s.rdx = 0x7
-      >>> assert len(bytes(s)) == 248
-      >>> unpack_many(bytes(s))
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6295552, 4096, 0, 0, 7, 10, 0, 0, 0, 0, 51, 0, 0, 0, 0, 0, 0, 0]
+        >>> context.clear(arch='amd64')
+        >>> s = SigreturnFrame()
+        >>> unpack_many(bytes(s))
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 51, 0, 0, 0, 0, 0, 0, 0]
+        >>> assert len(s) == 248
+        >>> s.rax = 0xa
+        >>> s.rdi = 0x00601000
+        >>> s.rsi = 0x1000
+        >>> s.rdx = 0x7
+        >>> assert len(bytes(s)) == 248
+        >>> unpack_many(bytes(s))
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6295552, 4096, 0, 0, 7, 10, 0, 0, 0, 0, 51, 0, 0, 0, 0, 0, 0, 0]
 
-      Crafting a SigreturnFrame that calls mprotect on i386
+        Crafting a SigreturnFrame that calls mprotect on i386
 
-      >>> context.clear(arch='i386')
-      >>> s = SigreturnFrame(kernel='i386')
-      >>> unpack_many(bytes(s))
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 115, 0, 0, 123, 0]
-      >>> assert len(s) == 80
-      >>> s.eax = 125
-      >>> s.ebx = 0x00601000
-      >>> s.ecx = 0x1000
-      >>> s.edx = 0x7
-      >>> assert len(bytes(s)) == 80
-      >>> unpack_many(bytes(s))
-      [0, 0, 0, 0, 0, 0, 0, 0, 6295552, 7, 4096, 125, 0, 0, 0, 115, 0, 0, 123, 0]
+        >>> context.clear(arch='i386')
+        >>> s = SigreturnFrame(kernel='i386')
+        >>> unpack_many(bytes(s))
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 115, 0, 0, 123, 0]
+        >>> assert len(s) == 80
+        >>> s.eax = 125
+        >>> s.ebx = 0x00601000
+        >>> s.ecx = 0x1000
+        >>> s.edx = 0x7
+        >>> assert len(bytes(s)) == 80
+        >>> unpack_many(bytes(s))
+        [0, 0, 0, 0, 0, 0, 0, 0, 6295552, 7, 4096, 125, 0, 0, 0, 115, 0, 0, 123, 0]
 
-      Crafting a SigreturnFrame that calls mprotect on ARM
+        Crafting a SigreturnFrame that calls mprotect on ARM
 
-      >>> s = SigreturnFrame(arch='arm')
-      >>> unpack_many(bytes(s))
-      [0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1073741840, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1447448577, 288]
-      >>> s.r0 = 125
-      >>> s.r1 = 0x00601000
-      >>> s.r2 = 0x1000
-      >>> s.r3 = 0x7
-      >>> assert len(bytes(s)) == 240
-      >>> unpack_many(bytes(s))
-      [0, 0, 0, 0, 0, 6, 0, 0, 125, 6295552, 4096, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1073741840, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1447448577, 288]
+        >>> s = SigreturnFrame(arch='arm')
+        >>> unpack_many(bytes(s))
+        [0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1073741840, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1447448577, 288]
+        >>> s.r0 = 125
+        >>> s.r1 = 0x00601000
+        >>> s.r2 = 0x1000
+        >>> s.r3 = 0x7
+        >>> assert len(bytes(s)) == 240
+        >>> unpack_many(bytes(s))
+        [0, 0, 0, 0, 0, 6, 0, 0, 125, 6295552, 4096, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1073741840, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1447448577, 288]
 
-      Crafting a SigreturnFrame that calls mprotect on MIPS
+        Crafting a SigreturnFrame that calls mprotect on MIPS
 
-      >>> context.clear()
-      >>> context.endian = "big"
-      >>> s = SigreturnFrame(arch='mips')
-      >>> unpack_many(bytes(s))
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-      >>> s.v0 = 0x101d
-      >>> s.a0 = 0x00601000
-      >>> s.a1 = 0x1000
-      >>> s.a2 = 0x7
-      >>> assert len(bytes(s)) == 296
-      >>> unpack_many(bytes(s))
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4125, 0, 0, 0, 6295552, 0, 4096, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        >>> context.clear()
+        >>> context.endian = "big"
+        >>> s = SigreturnFrame(arch='mips')
+        >>> unpack_many(bytes(s))
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        >>> s.v0 = 0x101d
+        >>> s.a0 = 0x00601000
+        >>> s.a1 = 0x1000
+        >>> s.a2 = 0x7
+        >>> assert len(bytes(s)) == 296
+        >>> unpack_many(bytes(s))
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4125, 0, 0, 0, 6295552, 0, 4096, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
-      Crafting a SigreturnFrame that calls mprotect on MIPSel
+        Crafting a SigreturnFrame that calls mprotect on MIPSel
 
-      >>> context.clear()
-      >>> context.endian = "little"
-      >>> s = SigreturnFrame(arch='mips')
-      >>> unpack_many(bytes(s))
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-      >>> s.v0 = 0x101d
-      >>> s.a0 = 0x00601000
-      >>> s.a1 = 0x1000
-      >>> s.a2 = 0x7
-      >>> assert len(bytes(s)) == 292
-      >>> unpack_many(bytes(s))
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4125, 0, 0, 0, 6295552, 0, 4096, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        >>> context.clear()
+        >>> context.endian = "little"
+        >>> s = SigreturnFrame(arch='mips')
+        >>> unpack_many(bytes(s))
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        >>> s.v0 = 0x101d
+        >>> s.a0 = 0x00601000
+        >>> s.a1 = 0x1000
+        >>> s.a2 = 0x7
+        >>> assert len(bytes(s)) == 292
+        >>> unpack_many(bytes(s))
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4125, 0, 0, 0, 6295552, 0, 4096, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
-      Crafting a SigreturnFrame that calls mprotect on Aarch64
+        Crafting a SigreturnFrame that calls mprotect on Aarch64
 
-      >>> context.clear()
-      >>> context.endian = "little"
-      >>> s = SigreturnFrame(arch='aarch64')
-      >>> unpack_many(bytes(s))
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1179680769, 528]
-      >>> s.x8 = 0xe2
-      >>> s.x0 = 0x4000
-      >>> s.x1 = 0x1000
-      >>> s.x2 = 0x7
-      >>> assert len(bytes(s)) == 600
-      >>> unpack_many(bytes(s))
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16384, 0, 4096, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 226, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1179680769, 528]
-  """
-
-  arch = None
-  frame = None
-  size = 0
-  _regs = []
-  endian = None
-
-  @LocalContext
-  def __init__(self):
-    if context.kernel is None and context.arch == 'i386':
-      log.error("kernel architecture must be specified")
-
-    self.arch = context.arch
-    self.endian = context.endian
-    self._regs = [self.registers[i] for i in sorted(self.registers.keys())]
-    self.update({r: 0 for r in self._regs})
-    self.size = len(bytes(self))
-    self.update(defaults[self.arch])
-
-    if context.arch == 'i386' and context.kernel == 'amd64':
-      self.update(defaults['i386_on_amd64'])
-
-  def __setitem__(self, item, value):
-    if item not in self._regs:
-      log.error("Unknown register %r (not in %r)" % (item, self._regs))
-    if self.arch == "arm" and item == "sp" and (value & 0x7):
-      log.warn_once("ARM SP should be aligned to an 8-byte boundary")
-    if self.arch == "aarch64" and item == "sp" and (value & 0xf):
-      log.warn_once("AArch64 SP should be aligned to a 16-byte boundary")
-    super(SigreturnFrame, self).__setitem__(item, value)
-
-  def __setattr__(self, attr, value):
-    if attr in SigreturnFrame.__dict__:
-      super(SigreturnFrame, self).__setattr__(attr, value)
-    else:
-      self.set_regvalue(attr, value)
-
-  def __getattr__(self, attr):
-    if attr in self:
-      return self[attr]
-    raise AttributeError(attr)
-
-  def __bytes__(self):
-    frame = b""
-    with context.local(arch=self.arch):
-      for register_offset in sorted(self.register_offsets):
-        if len(frame) < register_offset:
-          frame += b"\x00" * (register_offset - len(frame))
-        frame += pack(self[self.registers[register_offset]])
-    return frame
-
-  def __str__(self):
-    return str(self.__bytes__())
-
-  def __len__(self):
-    return self.size
-
-  def __flat__(self):
-    return bytes(self)
-
-  @property
-  def registers(self):
-    if self.arch == "mips" and self.endian == "little":
-      return registers["mipsel"]
-    return registers[self.arch]
-
-  @property
-  def register_offsets(self):
-    if self.arch == "mips" and self.endian == "little":
-      return registers["mipsel"]
-    return registers[self.arch].keys()
-
-  @property
-  def arguments(self):
-    # Skip the register used to hold the syscall number
-    return ABI.syscall(arch=self.arch).register_arguments[1:]
-
-  @arguments.setter
-  def arguments(self, a):
-    for arg, reg in zip(a, self.arguments):
-      setattr(self, reg, arg)
-
-  @property
-  def sp(self):
-    return self[stack_pointers[self.arch]]
-
-  @sp.setter
-  def sp(self, v):
-    self[stack_pointers[self.arch]] = v
-
-  @property
-  def pc(self):
-    return self[instruction_pointers[self.arch]]
-
-  @pc.setter
-  def pc(self, v):
-    self[instruction_pointers[self.arch]] = v
-
-  @property
-  def syscall(self):
-    return self[self.syscall_register]
-
-  @syscall.setter
-  def syscall(self, v):
-    self[self.syscall_register] = v
-
-  @property
-  def syscall_register(self):
-    return ABI.syscall(arch=self.arch).syscall_register
-
-  def set_regvalue(self, reg, val):
+        >>> context.clear()
+        >>> context.endian = "little"
+        >>> s = SigreturnFrame(arch='aarch64')
+        >>> unpack_many(bytes(s))
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1179680769, 528]
+        >>> s.x8 = 0xe2
+        >>> s.x0 = 0x4000
+        >>> s.x1 = 0x1000
+        >>> s.x2 = 0x7
+        >>> assert len(bytes(s)) == 600
+        >>> unpack_many(bytes(s))
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16384, 0, 4096, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 226, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1179680769, 528]
     """
-    Sets a specific ``reg`` to a ``val``
-    """
-    self[reg] = val
 
-  def get_spindex(self):
-    return self._regs.index(stack_pointers[self.arch])
+    arch = None
+    frame = None
+    size = 0
+    _regs = []
+    endian = None
+
+    @LocalContext
+    def __init__(self):
+        if context.kernel is None and context.arch == 'i386':
+            log.error("kernel architecture must be specified")
+
+        self.arch = context.arch
+        self.endian = context.endian
+        self._regs = [self.registers[i] for i in sorted(self.registers.keys())]
+        self.update({r: 0 for r in self._regs})
+        self.size = len(bytes(self))
+        self.update(defaults[self.arch])
+
+        if context.arch == 'i386' and context.kernel == 'amd64':
+            self.update(defaults['i386_on_amd64'])
+
+    def __setitem__(self, item, value):
+        if item not in self._regs:
+            log.error("Unknown register %r (not in %r)" % (item, self._regs))
+        if self.arch == "arm" and item == "sp" and (value & 0x7):
+            log.warn_once("ARM SP should be aligned to an 8-byte boundary")
+        if self.arch == "aarch64" and item == "sp" and (value & 0xf):
+            log.warn_once("AArch64 SP should be aligned to a 16-byte boundary")
+        super(SigreturnFrame, self).__setitem__(item, value)
+
+    def __setattr__(self, attr, value):
+        if attr in SigreturnFrame.__dict__:
+            super(SigreturnFrame, self).__setattr__(attr, value)
+        else:
+            self.set_regvalue(attr, value)
+
+    def __getattr__(self, attr):
+        if attr in self:
+            return self[attr]
+        raise AttributeError(attr)
+
+    def __bytes__(self):
+        frame = b""
+        with context.local(arch=self.arch):
+            for register_offset in sorted(self.register_offsets):
+                if len(frame) < register_offset:
+                    frame += b"\x00" * (register_offset - len(frame))
+                frame += pack(self[self.registers[register_offset]])
+        return frame
+
+    def __str__(self):
+        return str(self.__bytes__())
+
+    def __len__(self):
+        return self.size
+
+    def __flat__(self):
+        return bytes(self)
+
+    @property
+    def registers(self):
+        if self.arch == "mips" and self.endian == "little":
+            return registers["mipsel"]
+        return registers[self.arch]
+
+    @property
+    def register_offsets(self):
+        if self.arch == "mips" and self.endian == "little":
+            return registers["mipsel"]
+        return registers[self.arch].keys()
+
+    @property
+    def arguments(self):
+        # Skip the register used to hold the syscall number
+        return ABI.syscall(arch=self.arch).register_arguments[1:]
+
+    @arguments.setter
+    def arguments(self, a):
+        for arg, reg in zip(a, self.arguments):
+            setattr(self, reg, arg)
+
+    @property
+    def sp(self):
+        return self[stack_pointers[self.arch]]
+
+    @sp.setter
+    def sp(self, v):
+        self[stack_pointers[self.arch]] = v
+
+    @property
+    def pc(self):
+        return self[instruction_pointers[self.arch]]
+
+    @pc.setter
+    def pc(self, v):
+        self[instruction_pointers[self.arch]] = v
+
+    @property
+    def syscall(self):
+        return self[self.syscall_register]
+
+    @syscall.setter
+    def syscall(self, v):
+        self[self.syscall_register] = v
+
+    @property
+    def syscall_register(self):
+        return ABI.syscall(arch=self.arch).syscall_register
+
+    def set_regvalue(self, reg, val):
+        """
+        Sets a specific ``reg`` to a ``val``
+        """
+        self[reg] = val
+
+    def get_spindex(self):
+        return self._regs.index(stack_pointers[self.arch])

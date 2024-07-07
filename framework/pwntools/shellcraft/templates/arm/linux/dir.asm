@@ -1,4 +1,4 @@
-<% from pwnlib.shellcraft import arm, pretty, common %>
+<% from pwntools.shellcraft import arm, pretty, common %>
 <%page args="in_fd = 'r6', size = 0x800, allocate_stack = True"/>
 <%docstring> Reads to the stack from a directory.
 

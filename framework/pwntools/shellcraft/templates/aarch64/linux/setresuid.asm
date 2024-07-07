@@ -1,5 +1,5 @@
-<% from pwntools.shellcraft import common %>
-<% from pwntools.shellcraft.aarch64 import mov, linux %>
+<% from pwnlib.shellcraft import common %>
+<% from pwnlib.shellcraft.aarch64 import mov, linux %>
 <%page args="ruid=None, euid=None, suid=None"/>
 <%docstring>
 Args: [ruid = geteuid(), euid = ruid, suid = ruid]

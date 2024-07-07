@@ -1,7 +1,7 @@
 <%
-from pwntools.shellcraft.aarch64 import pushstr
-from pwntools.shellcraft.aarch64.linux import socket, syscall
-from pwntools.util.net import sockaddr
+from pwnlib.shellcraft.aarch64 import pushstr
+from pwnlib.shellcraft.aarch64.linux import socket, syscall
+from pwnlib.util.net import sockaddr
 %>
 
 <%page args="host, port, network = 'ipv4'"/>
