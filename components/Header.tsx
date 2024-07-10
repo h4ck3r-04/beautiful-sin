@@ -11,6 +11,11 @@ import {
     navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { IconShieldStar } from "@tabler/icons-react";
+import {
+    GITHUB_REPO,
+    DISCORD_URL,
+    DOCUMENTATION_WEBSITE
+} from "@/constants/base";
 
 const components: {
     title: string;
@@ -109,9 +114,23 @@ export function Header() {
                     </NavigationMenuContent>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                    <Link href="/docs" legacyBehavior passHref>
+                    <Link href={DOCUMENTATION_WEBSITE} legacyBehavior passHref>
                         <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                             Documentation
+                        </NavigationMenuLink>
+                    </Link>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                    <Link href={GITHUB_REPO} legacyBehavior passHref>
+                        <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                            Github
+                        </NavigationMenuLink>
+                    </Link>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                    <Link href={DISCORD_URL} legacyBehavior passHref>
+                        <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                            Discord
                         </NavigationMenuLink>
                     </Link>
                 </NavigationMenuItem>

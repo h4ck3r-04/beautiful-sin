@@ -3,10 +3,7 @@ import {
     TOOL_VERSION,
     TOOL_DESCRIPTION,
     TOOL_NOTICE,
-    AUTHOR,
-    GITHUB_REPO,
-    DISCORD_URL,
-    DOCUMENTATION_WEBSITE
+    AUTHOR
 } from "@/constants/base";
 import Link from "next/link";
 import { IconArrowUpRight, IconBrandDiscordFilled, IconBrandGithubFilled } from "@tabler/icons-react";
@@ -23,17 +20,6 @@ export default function Footer() {
                 <p className="text-sm">
                     Created by <Link href={`https://github.com/${AUTHOR}`} target="_blank" rel="noopener noreferrer" className="underline">{AUTHOR}</Link>
                 </p>
-            </div>
-            <div className="flex flex-row w-fit items-center justify-center space-x-3 px-1">
-                <Link href={GITHUB_REPO} className="flex w-8 h-8 bg-white rounded-full items-center justify-center" target="_blank" rel="noopener noreferrer">
-                    <IconBrandGithubFilled className="h-6 w-6 text-black" />
-                </Link>
-                <Link href={DISCORD_URL} className="flex w-8 h-8 bg-white rounded-full items-center justify-center" target="_blank" rel="noopener noreferrer">
-                    <IconBrandDiscordFilled className="h-6 w-6 text-black" />
-                </Link>
-                <Link href={DOCUMENTATION_WEBSITE} className="flex w-8 h-8 bg-white rounded-full items-center justify-center" target="_blank" rel="noopener noreferrer">
-                    <IconArrowUpRight className="h-6 w-6 text-black" />
-                </Link>
             </div>
         </footer>
     )
