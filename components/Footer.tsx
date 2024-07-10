@@ -4,7 +4,7 @@ import {
     TOOL_DESCRIPTION,
     TOOL_NOTICE,
     AUTHOR
-} from "@/constants/base";
+} from "@/data/constants";
 import Link from "next/link";
 import { IconArrowUpRight, IconBrandDiscordFilled, IconBrandGithubFilled } from "@tabler/icons-react";
 

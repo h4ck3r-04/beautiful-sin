@@ -1,5 +1,5 @@
 "use client"
-import { BASE_URL } from "@/constants/base";
+import { BASE_URL } from "@/data/constants";
 import { useEffect, useState } from "react";
 
 export default function Home() {

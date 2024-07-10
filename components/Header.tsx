@@ -17,9 +17,9 @@ import {
     GITHUB_REPO,
     DISCORD_URL,
     DOCUMENTATION_WEBSITE
-} from "@/constants/base";
+} from "@/data/constants";
 
-const components: { title: string; href: string; description: string }[] = [
+const category: { title: string; href: string; description: string }[] = [
     {
         title: "Web Security",
         href: "/web-security",
@@ -117,8 +117,6 @@ const components: { title: string; href: string; description: string }[] = [
     },
 ];
 
-
-
 export function Header() {
     return (
         <div className="flex flex-row justify-between bg-black z-100 fixed top-0 w-full px-2 py-2 items-center">
@@ -147,10 +145,10 @@ export function Header() {
                         </NavigationMenuContent>
                     </NavigationMenuItem>
                     <NavigationMenuItem>
-                        <NavigationMenuTrigger>Components</NavigationMenuTrigger>
+                        <NavigationMenuTrigger>Category</NavigationMenuTrigger>
                         <NavigationMenuContent className="bg-black overflow-y-auto max-h-[500px]">
                             <ul className="grid w-[500px] gap-3 p-4 md:w-[600px] md:grid-cols-2 lg:w-[800px] ">
-                                {components.map((component) => (
+                                {category.map((component) => (
                                     <ListItem
                                         key={component.title}
                                         title={component.title}
@@ -192,7 +190,7 @@ export function Header() {
                     </NavigationMenuItem>
                 </NavigationMenuList>
             </NavigationMenu>
-            <p className="font-light text-[12px] hidden md:flex underline text-gray-400">Press Cmd/Ctrl + k to search</p>
+            <p className="font-light text-[12px] hidden md:flex text-gray-400">Press Cmd/Ctrl + k to search</p>
         </div>
     );
 }

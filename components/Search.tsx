@@ -11,6 +11,7 @@ import {
     CommandShortcut,
 } from "@/components/ui/command"
 import { useEffect, useState } from "react"
+import Link from "next/link"
 
 export function Search() {
     const [open, setOpen] = useState(false)
@@ -32,7 +33,7 @@ export function Search() {
             <CommandList>
                 <CommandEmpty>No results found.</CommandEmpty>
                 <CommandGroup heading="Suggestions">
-                    <CommandItem>Calendar</CommandItem>
+                    <Link href="/calendar"><CommandItem>Calendar</CommandItem></Link>
                     <CommandItem>Search Emoji</CommandItem>
                     <CommandItem>Calculator</CommandItem>
                 </CommandGroup>
