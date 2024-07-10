@@ -1,4 +1,5 @@
 "use client"
+import { BASE_URL } from "@/constants/base";
 import { useEffect, useState } from "react";
 
 export default function Home() {
@@ -6,7 +7,7 @@ export default function Home() {
   const [status, setStatus] = useState('Loading');
 
   const helloWorld = () => {
-    fetch(`/api/python`, {
+    fetch(BASE_URL + `/api/python`, {
       method: "GET",
       headers: {
         'Content-Type': "application/json",

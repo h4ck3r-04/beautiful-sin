@@ -4,11 +4,14 @@
   "private": true,
   "scripts": {
     "fastapi-dev": "pip3 install -r requirements.txt && python3 -m uvicorn api.index:app --reload",
+    "fastapi-prod": "uvicorn api.index:app",
     "next-dev": "next dev",
     "dev": "concurrently \"npm run next-dev\" \"npm run fastapi-dev\"",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "next-start": "next start",
+    "start": "concurrently \"npm run next-start\" \"npm run fastapi-prod\"",
+    "lint": "next lint",
+    "sin": "npm run build && npm run start"
   },
   "dependencies": {
     "@types/node": "20.2.4",
