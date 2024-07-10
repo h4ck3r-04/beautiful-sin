@@ -33,6 +33,7 @@ export function Search() {
             <CommandInput placeholder="Type a command or search..." />
             <CommandList>
                 <CommandEmpty>No results found.</CommandEmpty>
+                <CommandGroup heading="Navigation"></CommandGroup>
                 <CommandGroup heading="Dashboard">
                     {dashboard.map((component) => (
                         <Link href={component.href}><CommandItem>{component.title}</CommandItem></Link>
@@ -43,6 +44,7 @@ export function Search() {
                         <Link href={component.href}><CommandItem>{component.title}</CommandItem></Link>
                     ))}
                 </CommandGroup>
+                <CommandGroup heading="Tools"></CommandGroup>
             </CommandList>
         </CommandDialog>
     )
