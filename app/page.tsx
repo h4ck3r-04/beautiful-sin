@@ -22,7 +22,7 @@ export default function Home() {
   }, [])
 
   return (
-    <main>
+    <main className="min-h-screen">
       {status}
     </main>
   );
