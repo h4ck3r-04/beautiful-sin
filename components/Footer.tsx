@@ -23,9 +23,6 @@ export default function Footer() {
                 <p className="text-sm">
                     Created by <Link href={`https://github.com/${AUTHOR}`} target="_blank" rel="noopener noreferrer" className="underline">{AUTHOR}</Link>
                 </p>
-                <p className="text-sm">
-                    <a href={GITHUB_REPO} className="underline">GitHub Repository</a>
-                </p>
             </div>
             <div className="flex flex-row w-fit items-center justify-center space-x-3">
                 <Link href={GITHUB_REPO} className="flex w-8 h-8 bg-white rounded-full items-center justify-center" target="_blank" rel="noopener noreferrer">
