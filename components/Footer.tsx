@@ -17,14 +17,14 @@ export default function Footer() {
             <div className="w-full mb-4">
                 <p className="text-7xl">{TOOL_NAME}<span className="text-sm">{TOOL_VERSION}</span></p>
             </div>
-            <div className="text-left items-center px-1">
+            <div className="text-left items-center px-1 space-y-2">
                 <p className="text-sm">{TOOL_DESCRIPTION}</p>
                 <p className="text-sm text-red-400">{TOOL_NOTICE}</p>
                 <p className="text-sm">
                     Created by <Link href={`https://github.com/${AUTHOR}`} target="_blank" rel="noopener noreferrer" className="underline">{AUTHOR}</Link>
                 </p>
             </div>
-            <div className="flex flex-row w-fit items-center justify-center space-x-3">
+            <div className="flex flex-row w-fit items-center justify-center space-x-3 px-1">
                 <Link href={GITHUB_REPO} className="flex w-8 h-8 bg-white rounded-full items-center justify-center" target="_blank" rel="noopener noreferrer">
                     <IconBrandGithubFilled className="h-6 w-6 text-black" />
                 </Link>
