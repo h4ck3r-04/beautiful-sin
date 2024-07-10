@@ -139,14 +139,8 @@ export function Header() {
                                     </a>
                                 </NavigationMenuLink>
                             </li>
-                            <ListItem href="/docs" title="Introduction">
-                                Re-usable components built using Radix UI and Tailwind CSS.
-                            </ListItem>
-                            <ListItem href="/docs/installation" title="Installation">
-                                How to install dependencies and structure your app.
-                            </ListItem>
-                            <ListItem href="/docs/primitives/typography" title="Typography">
-                                Styles for headings, paragraphs, lists...etc
+                            <ListItem href="/checklist" title="Checklist">
+                                Essential tasks for robust cybersecurity management and compliance.
                             </ListItem>
                         </ul>
                     </NavigationMenuContent>
