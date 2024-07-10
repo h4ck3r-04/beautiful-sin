@@ -35,13 +35,13 @@ export function Search() {
                 <CommandEmpty>No results found.</CommandEmpty>
                 <CommandGroup heading="Navigation"></CommandGroup>
                 <CommandGroup heading="Dashboard">
-                    {dashboard.map((component) => (
-                        <Link href={component.href}><CommandItem>{component.title}</CommandItem></Link>
+                    {dashboard.map((component, index) => (
+                        <Link key={index} href={component.href}><CommandItem>{component.title}</CommandItem></Link>
                     ))}
                 </CommandGroup>
                 <CommandGroup heading="Category">
-                    {category.map((component) => (
-                        <Link href={component.href}><CommandItem>{component.title}</CommandItem></Link>
+                    {category.map((component, index) => (
+                        <Link key={index} href={component.href}><CommandItem>{component.title}</CommandItem></Link>
                     ))}
                 </CommandGroup>
                 <CommandGroup heading="Tools"></CommandGroup>
