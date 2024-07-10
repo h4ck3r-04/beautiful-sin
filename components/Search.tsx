@@ -8,10 +8,11 @@ import {
     CommandItem,
     CommandList,
     CommandSeparator,
-    CommandShortcut,
 } from "@/components/ui/command"
 import { useEffect, useState } from "react"
 import Link from "next/link"
+import { category } from "@/data/category";
+import { dashboard } from "@/data/dashboard";
 
 export function Search() {
     const [open, setOpen] = useState(false)
@@ -32,10 +33,15 @@ export function Search() {
             <CommandInput placeholder="Type a command or search..." />
             <CommandList>
                 <CommandEmpty>No results found.</CommandEmpty>
-                <CommandGroup heading="Suggestions">
-                    <Link href="/calendar"><CommandItem>Calendar</CommandItem></Link>
-                    <CommandItem>Search Emoji</CommandItem>
-                    <CommandItem>Calculator</CommandItem>
+                <CommandGroup heading="Dashboard">
+                    {dashboard.map((component) => (
+                        <Link href={component.href}><CommandItem>{component.title}</CommandItem></Link>
+                    ))}
+                </CommandGroup>
+                <CommandGroup heading="Category">
+                    {category.map((component) => (
+                        <Link href={component.href}><CommandItem>{component.title}</CommandItem></Link>
+                    ))}
                 </CommandGroup>
             </CommandList>
         </CommandDialog>
