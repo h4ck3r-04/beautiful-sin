@@ -24,7 +24,7 @@ export default function RootLayout({
       <body className={poppins.className}>
         <Header />
         <main className="flex-1 overflow-y-auto">
-          <div className="container p-4 mt-6">{children}</div>
+          <div className="container p-8 mt-10">{children}</div>
         </main>
         <Footer />
       </body>
