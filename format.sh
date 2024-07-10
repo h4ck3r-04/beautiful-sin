@@ -1,1 +1,0 @@
-autopep8 --indent-size 4 --aggressive --recursive --in-place .
