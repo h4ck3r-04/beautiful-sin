@@ -2,6 +2,7 @@ import Footer from '@/components/Footer'
 import './globals.css'
 import { Inter } from 'next/font/google'
 import { Poppins } from 'next/font/google'
+import { Header } from '@/components/Header'
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -21,7 +22,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={poppins.className}>
-        {children}
+        <Header />
+        <main className="flex-1 overflow-y-auto">
+          <div className="container p-4 mt-6">{children}</div>
+        </main>
         <Footer />
       </body>
     </html>
