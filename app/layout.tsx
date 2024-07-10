@@ -3,6 +3,7 @@ import './globals.css'
 import { Inter } from 'next/font/google'
 import { Poppins } from 'next/font/google'
 import { Header } from '@/components/Header'
+import { Search } from "@/components/Search"
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -23,6 +24,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={poppins.className}>
         <Header />
+        <Search />
         <main className="flex-1 overflow-y-auto">
           <div className="container p-8 mt-10">{children}</div>
         </main>
