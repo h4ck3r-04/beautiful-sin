@@ -1,6 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card"
-import { ScrollArea } from "@/components/ui/scroll-area"
+import RadialDemo from "@/components/RadialDemo"
+import Overview from "@/components/Overview"
 
 export default function WebSecurity() {
     return (
@@ -29,101 +30,54 @@ export default function WebSecurity() {
                 </TabsList>
 
                 {/* Tabs Content */}
-                <TabsContent value="reconnaissance" className="space-y-4 h-[90vh]">
+                <TabsContent value="reconnaissance" className="space-y-4 overflow-y-auto h-[90vh]">
                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                         <Card>
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                 <CardTitle className="text-sm font-medium">
-                                    Total Revenue
+                                    SQL Injection
                                 </CardTitle>
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    className="h-4 w-4 text-muted-foreground"
-                                >
-                                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                                </svg>
+                                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.3536 13.3536C12.1583 13.5488 11.8417 13.5488 11.6465 13.3536L6.39645 8.10355C6.36478 8.07188 6.33824 8.03702 6.31685 8H5.00002C4.78719 8 4.59769 7.86528 4.52777 7.66426L2.12777 0.764277C2.05268 0.548387 2.13355 0.309061 2.3242 0.182972C2.51486 0.0568819 2.76674 0.0761337 2.93602 0.229734L8.336 5.12972C8.44044 5.22449 8.50001 5.35897 8.50001 5.5V5.81684C8.53702 5.83824 8.57189 5.86478 8.60356 5.89645L13.8536 11.1464C14.0488 11.3417 14.0488 11.6583 13.8536 11.8536L12.3536 13.3536ZM8.25 6.95711L7.45711 7.75L12 12.2929L12.7929 11.5L8.25 6.95711ZM3.71669 2.28845L5.35549 7H6.2929L7.50001 5.79289V5.72146L3.71669 2.28845Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
                             </CardHeader>
                             <CardContent>
-                                <div className="text-2xl font-bold">$45,231.89</div>
+                                <div className="text-2xl font-bold">45</div>
                                 <p className="text-xs text-muted-foreground">
-                                    +20.1% from last month
+                                    Critical
                                 </p>
                             </CardContent>
                         </Card>
                         <Card>
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                 <CardTitle className="text-sm font-medium">
-                                    Subscriptions
+                                    XSS
                                 </CardTitle>
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    className="h-4 w-4 text-muted-foreground"
-                                >
-                                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                                    <circle cx="9" cy="7" r="4" />
-                                    <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
-                                </svg>
+                                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.3536 13.3536C12.1583 13.5488 11.8417 13.5488 11.6465 13.3536L6.39645 8.10355C6.36478 8.07188 6.33824 8.03702 6.31685 8H5.00002C4.78719 8 4.59769 7.86528 4.52777 7.66426L2.12777 0.764277C2.05268 0.548387 2.13355 0.309061 2.3242 0.182972C2.51486 0.0568819 2.76674 0.0761337 2.93602 0.229734L8.336 5.12972C8.44044 5.22449 8.50001 5.35897 8.50001 5.5V5.81684C8.53702 5.83824 8.57189 5.86478 8.60356 5.89645L13.8536 11.1464C14.0488 11.3417 14.0488 11.6583 13.8536 11.8536L12.3536 13.3536ZM8.25 6.95711L7.45711 7.75L12 12.2929L12.7929 11.5L8.25 6.95711ZM3.71669 2.28845L5.35549 7H6.2929L7.50001 5.79289V5.72146L3.71669 2.28845Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
                             </CardHeader>
                             <CardContent>
                                 <div className="text-2xl font-bold">+2350</div>
                                 <p className="text-xs text-muted-foreground">
-                                    +180.1% from last month
+                                    High
                                 </p>
                             </CardContent>
                         </Card>
                         <Card>
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-sm font-medium">Sales</CardTitle>
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    className="h-4 w-4 text-muted-foreground"
-                                >
-                                    <rect width="20" height="14" x="2" y="5" rx="2" />
-                                    <path d="M2 10h20" />
-                                </svg>
+                                <CardTitle className="text-sm font-medium">LFI</CardTitle>
+                                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.3536 13.3536C12.1583 13.5488 11.8417 13.5488 11.6465 13.3536L6.39645 8.10355C6.36478 8.07188 6.33824 8.03702 6.31685 8H5.00002C4.78719 8 4.59769 7.86528 4.52777 7.66426L2.12777 0.764277C2.05268 0.548387 2.13355 0.309061 2.3242 0.182972C2.51486 0.0568819 2.76674 0.0761337 2.93602 0.229734L8.336 5.12972C8.44044 5.22449 8.50001 5.35897 8.50001 5.5V5.81684C8.53702 5.83824 8.57189 5.86478 8.60356 5.89645L13.8536 11.1464C14.0488 11.3417 14.0488 11.6583 13.8536 11.8536L12.3536 13.3536ZM8.25 6.95711L7.45711 7.75L12 12.2929L12.7929 11.5L8.25 6.95711ZM3.71669 2.28845L5.35549 7H6.2929L7.50001 5.79289V5.72146L3.71669 2.28845Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
                             </CardHeader>
                             <CardContent>
                                 <div className="text-2xl font-bold">+12,234</div>
                                 <p className="text-xs text-muted-foreground">
-                                    +19% from last month
+                                    Severe
                                 </p>
                             </CardContent>
                         </Card>
                         <Card>
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                 <CardTitle className="text-sm font-medium">
-                                    Active Now
+                                    Active Ports
                                 </CardTitle>
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    className="h-4 w-4 text-muted-foreground"
-                                >
-                                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                                </svg>
+                                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.3536 13.3536C12.1583 13.5488 11.8417 13.5488 11.6465 13.3536L6.39645 8.10355C6.36478 8.07188 6.33824 8.03702 6.31685 8H5.00002C4.78719 8 4.59769 7.86528 4.52777 7.66426L2.12777 0.764277C2.05268 0.548387 2.13355 0.309061 2.3242 0.182972C2.51486 0.0568819 2.76674 0.0761337 2.93602 0.229734L8.336 5.12972C8.44044 5.22449 8.50001 5.35897 8.50001 5.5V5.81684C8.53702 5.83824 8.57189 5.86478 8.60356 5.89645L13.8536 11.1464C14.0488 11.3417 14.0488 11.6583 13.8536 11.8536L12.3536 13.3536ZM8.25 6.95711L7.45711 7.75L12 12.2929L12.7929 11.5L8.25 6.95711ZM3.71669 2.28845L5.35549 7H6.2929L7.50001 5.79289V5.72146L3.71669 2.28845Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
                             </CardHeader>
                             <CardContent>
                                 <div className="text-2xl font-bold">+573</div>
@@ -139,18 +93,18 @@ export default function WebSecurity() {
                                 <CardTitle>Overview</CardTitle>
                             </CardHeader>
                             <CardContent className="pl-2">
-                                {/* <Overview /> */}
+                                <Overview />
                             </CardContent>
                         </Card>
                         <Card className="col-span-3">
                             <CardHeader>
-                                <CardTitle>Recent Sales</CardTitle>
+                                <CardTitle>Radial Chart</CardTitle>
                                 <CardDescription>
                                     You made 265 sales this month.
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
-                                {/* <RecentSales /> */}
+                                <RadialDemo />
                             </CardContent>
                         </Card>
                     </div>
