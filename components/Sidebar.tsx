@@ -58,6 +58,11 @@ export function Sidebar() {
                             <span>Home</span>
                         </CommandItem>
                     </Link>
+                    <Link href="/misc">
+                        <CommandItem>
+                            <span>Miscellaneous</span>
+                        </CommandItem>
+                    </Link>
                 </CommandGroup>
                 <CommandGroup heading="Dashboard">
                     {dashboard.map((component, index) => (
