@@ -1,8 +1,7 @@
 import Footer from '@/components/Footer'
 import './globals.css'
-import { Inter } from 'next/font/google'
 import { Poppins } from 'next/font/google'
-import { Header } from '@/components/Header'
+import { Sidebar } from '@/components/Sidebar'
 import { Search } from "@/components/Search"
 
 const poppins = Poppins({
@@ -23,10 +22,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={poppins.className}>
-        <Header />
-        <Search />
-        <main className="flex-1 overflow-y-auto">
-          <div className="container p-8 mt-10">{children}</div>
+        <main className="grid lg:grid-cols-7">
+          <Sidebar />
+          <div className="col-span-4 lg:col-span-6 px-4 py-2">{children}</div>
         </main>
         <Footer />
       </body>

@@ -5,7 +5,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 export default function WebSecurity() {
     return (
         <div className="min-h-screen">
-            <Tabs defaultValue="reconnaissance" className="space-y-4 w-[113%]">
+            <Tabs defaultValue="reconnaissance" className="space-y-4">
                 {/* Tabs */}
                 <TabsList>
                     <TabsTrigger value="reconnaissance">
@@ -29,7 +29,7 @@ export default function WebSecurity() {
                 </TabsList>
 
                 {/* Tabs Content */}
-                <TabsContent value="reconnaissance" className="space-y-4 border-[1px] rounded-xl px-4 py-2 min-h-[100vh]">
+                <TabsContent value="reconnaissance" className="space-y-4 h-[90vh]">
                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                         <Card>
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
