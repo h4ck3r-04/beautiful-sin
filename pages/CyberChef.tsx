@@ -1,9 +1,5 @@
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { IconCirclePlus } from "@tabler/icons-react"
+import { Textarea } from "@/components/ui/textarea"
 import { Separator } from "@/components/ui/separator"
 import { Command, CommandInput, CommandItem, CommandList, CommandEmpty, CommandGroup, CommandSeparator } from "@/components/ui/command"
 
@@ -31,7 +27,7 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
 function Sidebar({ className, playlists }: SidebarProps) {
     return (
         <Command className="shadow-md h-[90vh] border-[1px]">
-            <CommandInput placeholder="Search..." />
+            <CommandInput placeholder="Operations" />
             <CommandList>
                 <CommandEmpty>No results found.</CommandEmpty>
                 <CommandGroup heading="Suggestions">
@@ -65,10 +61,28 @@ function Sidebar({ className, playlists }: SidebarProps) {
 
 export default function CyberChef() {
     return (
-        <div className="grid lg:grid-cols-5">
+        <div className="grid lg:grid-cols-7">
             <Sidebar playlists={playlists} className="hidden lg:block" />
-            <div className="col-span-3 lg:col-span-4 lg:border-[1px]">
-                <div className="h-full px-4 py-6 lg:px-8">
+            <div className="col-span-3 lg:border-[1px] h-full flex flex-col overflow-y-auto">
+                <div className=" px-4 py-[10px] border-b-[1px]">
+                    Recipe
+                </div>
+            </div>
+            <div className="col-span-3 flex flex-col border-[1px]">
+                <div className="flex-1 border-b-[1px] flex flex-col">
+                    <div className="px-4 py-[10px] border-b-[1px]">
+                        Input
+                    </div>
+                    <Textarea className="flex-1 w-full resize-none" />
+                </div>
+                <Separator />
+                <div className="flex-1">
+                    <div className="px-4 py-[10px] border-b-[1px]">
+                        Output
+                    </div>
+                    <div className="flex-1 p-4">
+                        {/* Output */}
+                    </div>
                 </div>
             </div>
         </div>
