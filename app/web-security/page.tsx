@@ -4,13 +4,31 @@ import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/com
 export default function WebSecurity() {
     return (
         <div className="min-h-screen">
-            <Tabs defaultValue="webcheck" className="space-y-4">
+            <Tabs defaultValue="reconnaissance" className="space-y-4">
+                {/* Tabs */}
                 <TabsList>
-                    <TabsTrigger value="webcheck">
-                        WebCheck
+                    <TabsTrigger value="reconnaissance">
+                        Reconnaissance
+                    </TabsTrigger>
+                    <TabsTrigger value="discovery">
+                        Discovery
+                    </TabsTrigger>
+                    <TabsTrigger value="vulnerability-analysis">
+                        Vulnerability Analysis
+                    </TabsTrigger>
+                    <TabsTrigger value="exploitation">
+                        Exploitation
+                    </TabsTrigger>
+                    <TabsTrigger value="post-exploitation">
+                        Post Exploitation
+                    </TabsTrigger>
+                    <TabsTrigger value="reporting">
+                        Reporting
                     </TabsTrigger>
                 </TabsList>
-                <TabsContent value="webcheck" className="space-y-4">
+
+                {/* Tabs Content */}
+                <TabsContent value="reconnaissance" className="space-y-4">
                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                         <Card>
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
