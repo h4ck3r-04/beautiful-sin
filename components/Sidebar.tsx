@@ -1,4 +1,6 @@
+"use client"
 import * as React from "react";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import {
     GITHUB_REPO,
@@ -10,9 +12,44 @@ import { dashboard } from "@/data/dashboard";
 import { Command, CommandInput, CommandItem, CommandList, CommandEmpty, CommandGroup, CommandSeparator } from "./ui/command"
 
 export function Sidebar() {
+    const [isCommandOpen, setIsCommandOpen] = useState(false);
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+        if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
+            event.preventDefault();
+            setIsCommandOpen((prev) => {
+                if (prev && inputRef.current) {
+                    inputRef.current.blur();
+                }
+                return !prev;
+            });
+        }
+        if (event.key === 'Escape') {
+            event.preventDefault();
+            setIsCommandOpen(false);
+            if (inputRef.current) {
+                inputRef.current.blur();
+            }
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener('keydown', handleKeyDown);
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [isCommandOpen]);
+
+    useEffect(() => {
+        if (isCommandOpen && inputRef.current) {
+            inputRef.current.focus();
+        }
+    }, [isCommandOpen]);
+
     return (
         <Command className="border shadow-md h-[100vh]">
-            <CommandInput placeholder="Search..." />
+            <CommandInput ref={inputRef} placeholder="Search Or ⌘ + K" />
             <CommandList>
                 <CommandEmpty>No results found.</CommandEmpty>
                 <CommandGroup heading="Navigation">
