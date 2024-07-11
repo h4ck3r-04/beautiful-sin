@@ -14,7 +14,7 @@ export default function Misc() {
                 </TabsList>
 
                 {/* Tabs Content */}
-                <TabsContent value="cyberchef" className="space-y-4 border-[1px] border-white rounded-xl">
+                <TabsContent value="cyberchef" className="space-y-4 border-[1px] border-white rounded-xl min-h-[100vh]">
                     <CyberChef />
                 </TabsContent>
             </Tabs>
