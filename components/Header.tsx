@@ -23,12 +23,12 @@ import { dashboard } from "@/data/dashboard";
 
 export function Header() {
     return (
-        <div className="flex flex-row justify-between bg-black z-100 fixed top-0 w-full px-2 py-2 items-center align-middle">
+        <div className="flex flex-row justify-between bg-background z-100 fixed top-0 w-full px-2 py-2 items-center align-middle">
             <NavigationMenu>
                 <NavigationMenuList >
                     <NavigationMenuItem>
                         <NavigationMenuTrigger>Dashboard</NavigationMenuTrigger>
-                        <NavigationMenuContent className="bg-black">
+                        <NavigationMenuContent className="bg-background">
                             <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                                 <li className="row-span-3">
                                     <NavigationMenuLink asChild>
@@ -56,7 +56,7 @@ export function Header() {
                     </NavigationMenuItem>
                     <NavigationMenuItem>
                         <NavigationMenuTrigger>Category</NavigationMenuTrigger>
-                        <NavigationMenuContent className="bg-black overflow-y-auto max-h-[500px]">
+                        <NavigationMenuContent className="bg-background overflow-y-auto max-h-[500px]">
                             <ul className="grid w-[500px] gap-3 p-4 md:w-[600px] md:grid-cols-2 lg:w-[800px] ">
                                 {category.map((component) => (
                                     <ListItem
