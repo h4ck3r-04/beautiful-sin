@@ -2,7 +2,6 @@ import Footer from '@/components/Footer'
 import './globals.css'
 import { Poppins } from 'next/font/google'
 import { Sidebar } from '@/components/Sidebar'
-import { Search } from "@/components/Search"
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -22,9 +21,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={poppins.className}>
-        <main className="grid lg:grid-cols-7">
+        <main className="grid lg:grid-cols-6">
           <Sidebar />
-          <div className="col-span-4 lg:col-span-6 px-4 py-2">{children}</div>
+          <div className="col-span-4 lg:col-span-5 px-4 py-2">{children}</div>
         </main>
         <Footer />
       </body>

@@ -1,19 +1,6 @@
 import * as React from "react";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
 import {
-    NavigationMenu,
-    NavigationMenuContent,
-    NavigationMenuItem,
-    NavigationMenuLink,
-    NavigationMenuList,
-    NavigationMenuTrigger,
-    navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
-import { IconShieldStar, IconInfoCircle } from "@tabler/icons-react";
-import {
-    TOOL_NAME,
-    TOOL_TAGLINE,
     GITHUB_REPO,
     DISCORD_URL,
     DOCUMENTATION_WEBSITE
@@ -24,32 +11,46 @@ import { Command, CommandInput, CommandItem, CommandList, CommandEmpty, CommandG
 
 export function Sidebar() {
     return (
-        <Command className=" border shadow-md h-[100vh]">
+        <Command className="border shadow-md h-[100vh]">
             <CommandInput placeholder="Search..." />
             <CommandList>
                 <CommandEmpty>No results found.</CommandEmpty>
-                <CommandGroup heading="Suggestions">
-                    <CommandItem>
-                        <span>Calendar</span>
-                    </CommandItem>
-                    <CommandItem>
-                        <span>Search Emoji</span>
-                    </CommandItem>
-                    <CommandItem>
-                        <span>Launch</span>
-                    </CommandItem>
+                <CommandGroup heading="Navigation">
+                    <Link href="/">
+                        <CommandItem>
+                            <span>Home</span>
+                        </CommandItem>
+                    </Link>
+                </CommandGroup>
+                <CommandGroup heading="Dashboard">
+                    {dashboard.map((component, index) => (
+                        <Link key={index} href={component.href}><CommandItem>{component.title}</CommandItem></Link>
+                    ))}
+                </CommandGroup>
+                <CommandGroup heading="Category">
+                    {category.map((component, index) => (
+                        <Link key={index} href={component.href}><CommandItem>{component.title}</CommandItem></Link>
+                    ))}
+                </CommandGroup>
+                <CommandGroup heading="Settings">
                 </CommandGroup>
                 <CommandSeparator />
-                <CommandGroup heading="Settings">
-                    <CommandItem>
-                        <span>Profile</span>
-                    </CommandItem>
-                    <CommandItem>
-                        <span>Mail</span>
-                    </CommandItem>
-                    <CommandItem>
-                        <span>Settings</span>
-                    </CommandItem>
+                <CommandGroup heading="Community">
+                    <Link href={DOCUMENTATION_WEBSITE}>
+                        <CommandItem>
+                            <span>Documentation</span>
+                        </CommandItem>
+                    </Link>
+                    <Link href={GITHUB_REPO}>
+                        <CommandItem>
+                            <span>Github</span>
+                        </CommandItem>
+                    </Link>
+                    <Link href={DISCORD_URL}>
+                        <CommandItem>
+                            <span>Discord</span>
+                        </CommandItem>
+                    </Link>
                 </CommandGroup>
             </CommandList>
         </Command>
