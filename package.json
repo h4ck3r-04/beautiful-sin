@@ -1,17 +1,19 @@
 {
-  "name": "nextjs-fastapi",
-  "version": "0.1.0",
+  "name": "beautiful-sin",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
-    "fastapi-dev": "pip3 install -r requirements.txt && python3 -m uvicorn api.index:app --reload",
+    "fastapi-build": "python3 -m pip install -r requirements.txt",
+    "fastapi-dev": "python3 -m uvicorn api.index:app --reload",
     "fastapi-prod": "uvicorn api.index:app",
     "next-dev": "next dev",
+    "next-build": "next build",
+    "next-prod": "next start",
     "dev": "concurrently \"npm run next-dev\" \"npm run fastapi-dev\"",
-    "build": "next build",
-    "next-start": "next start",
+    "build": "npm run next-build && npm run fastapi-build",
     "start": "concurrently \"npm run next-start\" \"npm run fastapi-prod\"",
     "lint": "next lint",
-    "sin": "npm run build && npm run start"
+    "sin": "npm run start"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.1",
