@@ -11,9 +11,8 @@
     "next-prod": "next start",
     "dev": "concurrently \"npm run next-dev\" \"npm run fastapi-dev\"",
     "build": "npm run next-build && npm run fastapi-build",
-    "start": "concurrently \"npm run next-start\" \"npm run fastapi-prod\"",
-    "lint": "next lint",
-    "sin": "npm run start"
+    "start": "concurrently \"npm run next-prod\" \"npm run fastapi-prod\"",
+    "lint": "next lint"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.1",
