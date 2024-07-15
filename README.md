@@ -13,5 +13,6 @@ npm run dev
 
 ```bash
 npm install
+npm run build
 npm run sin
 ```
