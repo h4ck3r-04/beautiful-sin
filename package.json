@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "fastapi-build": "python3 -m pip install -r requirements.txt",
-    "fastapi-dev": "python3 -m uvicorn api.index:app --reload",
-    "fastapi-prod": "uvicorn api.index:app",
+    "fastapi-dev": "python3 -m uvicorn api.fsqli.index:app --reload",
+    "fastapi-prod": "uvicorn api.fsqli.index:app",
     "next-dev": "next dev",
     "next-build": "next build",
     "next-prod": "next start",
