@@ -196,10 +196,10 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-<<<<<<< HEAD
 # Zed text editor
 pyrightconfig.json
-=======
+
+
 # Golang
 # Binaries for programs and plugins
 *.exe
@@ -226,4 +226,3 @@ go.work.sum
 
 # Beautiful Sin Builds
 api/web-check/webcheck
->>>>>>> tool/web-check
