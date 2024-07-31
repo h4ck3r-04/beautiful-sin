@@ -3,15 +3,18 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "web-check-api-dev": "cd api/web-check && go run main.go",
+    "web-check-api-build": "cd api/web-check && go build -o webcheck",
+    "web-check-api-prod": "./api/web-check/main",
     "fastapi-build": "python3 -m pip install -r requirements.txt",
     "fsqli-fastapi-dev": "python3 -m uvicorn api.fsqli.index:app --reload",
     "fsqli-fastapi-prod": "uvicorn api.fsqli.index:app",
     "next-dev": "next dev",
     "next-build": "next build",
     "next-prod": "next start",
-    "dev": "concurrently \"npm run next-dev\" \"npm run fsqli-fastapi-dev\"",
-    "build": "npm run next-build && npm run fastapi-build",
-    "start": "concurrently \"npm run next-prod\" \"npm run fsqli-fastapi-prod\"",
+    "dev": "concurrently \"npm run next-dev\" \"npm run fsqli-fastapi-dev\" \"npm run web-check-api-dev\"",
+    "build": "npm run next-build && npm run fastapi-build && npm run web-check-api-build",
+    "start": "concurrently \"npm run next-prod\" \"npm run fsqli-fastapi-prod\" \"npm run web-check-api-prod\"",
     "lint": "next lint"
   },
   "dependencies": {
