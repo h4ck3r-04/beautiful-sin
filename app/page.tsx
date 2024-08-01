@@ -1,29 +1,27 @@
-"use client"
-import { BASE_URL } from "@/data/constants";
-import { useEffect, useState } from "react";
+"use client";
+import * as React from "react";
+import { Search } from "@/components/Search";
+import { useState } from "react";
+import DynamicComponentLoader from "@/props/DynamicContentLoader";
 
-export default function Home() {
+const Dashboard: React.FC = () => {
+  const [selectedComponents, setSelectedComponents] = useState<string[]>([]);
 
-  const [status, setStatus] = useState('Loading');
-
-  const helloWorld = () => {
-    fetch(BASE_URL + `/api/python`, {
-      method: "GET",
-      headers: {
-        'Content-Type': "application/json",
-      },
-    }).then(response => response.json())
-      .then(data => { console.log(data); setStatus(data.message) })
-      .catch(error => console.log(error))
+  const handleSelectComponent = (componentName: string) => {
+    setSelectedComponents((prevComponents) => [
+      ...prevComponents,
+      componentName,
+    ]);
   };
 
-  useEffect(() => {
-    helloWorld();
-  }, [])
-
   return (
-    <main className="min-h-screen">
-      {status}
-    </main>
+    <div className="min-h-screen flex flex-col items-center align-middle justify-center">
+      <Search onSelect={handleSelectComponent} />
+      {selectedComponents.map((componentName, index) => (
+        <DynamicComponentLoader key={index} componentName={componentName} />
+      ))}
+    </div>
   );
-}
+};
+
+export default Dashboard;

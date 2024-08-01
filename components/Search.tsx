@@ -1,7 +1,6 @@
 "use client";
 import * as React from "react";
 import { useEffect, useState, useRef } from "react";
-import Link from "next/link";
 import {
   Command,
   CommandInput,
@@ -12,8 +11,17 @@ import {
   CommandSeparator,
 } from "./ui/command";
 
-export function Search() {
+interface SearchProps {
+  onSelect: (componentName: string) => void;
+}
+
+const availableComponents = ["ComponentA", "ComponentB"];
+
+export function Search({ onSelect }: SearchProps) {
   const [isCommandOpen, setIsCommandOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredComponents, setFilteredComponents] =
+    useState(availableComponents);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleKeyDown = (event: KeyboardEvent) => {
@@ -40,28 +48,45 @@ export function Search() {
     }
   }, [isCommandOpen]);
 
-  const handleSelect = () => {
+  useEffect(() => {
+    const filtered = availableComponents.filter((component) =>
+      component.toLowerCase().includes(searchQuery.toLowerCase()),
+    );
+    setFilteredComponents(filtered);
+  }, [searchQuery]);
+
+  const handleSelect = (componentName: string) => {
+    onSelect(componentName);
     setIsCommandOpen(false);
+  };
+
+  const handleInputChange = (value: string) => {
+    setSearchQuery(value);
   };
 
   return (
     <>
       {isCommandOpen && (
         <Command className="fixed border shadow-md h-[50vh] w-[70vw] z-[9999]">
-          <CommandInput ref={inputRef} placeholder="Search Or ⌘ + K" />
+          <CommandInput
+            ref={inputRef}
+            placeholder="Search Or ⌘ + K"
+            value={searchQuery}
+            onValueChange={handleInputChange}
+          />
           <CommandList>
-            <CommandEmpty>No results found.</CommandEmpty>
-            <CommandGroup heading="Navigation">
-              <Link href="/" onClick={handleSelect}>
-                <CommandItem>
-                  <span>Home</span>
+            {filteredComponents.length === 0 && (
+              <CommandEmpty>No results found.</CommandEmpty>
+            )}
+            <CommandGroup heading="Components">
+              {filteredComponents.map((component) => (
+                <CommandItem
+                  key={component}
+                  onSelect={() => handleSelect(component)}
+                >
+                  <span>{component}</span>
                 </CommandItem>
-              </Link>
-              <Link href="/misc" onClick={handleSelect}>
-                <CommandItem>
-                  <span>Miscellaneous</span>
-                </CommandItem>
-              </Link>
+              ))}
             </CommandGroup>
             <CommandSeparator />
           </CommandList>
