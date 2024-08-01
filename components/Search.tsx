@@ -67,7 +67,7 @@ export function Search({ onSelect }: SearchProps) {
   return (
     <>
       {isCommandOpen && (
-        <Command className="fixed border shadow-md h-[50vh] w-[70vw] z-[9999]">
+        <Command className="fixed border shadow-md h-[50vh] w-[70vw] z-[9999] bg-black">
           <CommandInput
             ref={inputRef}
             placeholder="Search Or ⌘ + K"
