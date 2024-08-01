@@ -74,7 +74,7 @@ export function Search({ onSelect }: SearchProps) {
             value={searchQuery}
             onValueChange={handleInputChange}
           />
-          <CommandList>
+          <CommandList className="bg-black">
             {filteredComponents.length === 0 && (
               <CommandEmpty>No results found.</CommandEmpty>
             )}
