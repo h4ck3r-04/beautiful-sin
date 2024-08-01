@@ -224,5 +224,12 @@ go.work.sum
 # env file
 .env
 
+# Aquatone
+headers/
+html/
+screenshots/
+aquatone
+
+
 # Beautiful Sin Builds
 api/web-check/webcheck
