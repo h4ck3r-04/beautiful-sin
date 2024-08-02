@@ -1,4 +1,3 @@
-import Footer from "@/components/Footer";
 import "./globals.css";
 import { Poppins } from "next/font/google";
 import { TOOL_NAME, TOOL_DESCRIPTION } from "@/data/constants";
@@ -24,7 +23,6 @@ export default function RootLayout({
         <main className="flex flex-col items-center justify-center align-middle">
           <div className="px-4 py-2">{children}</div>
         </main>
-        <Footer />
       </body>
     </html>
   );
