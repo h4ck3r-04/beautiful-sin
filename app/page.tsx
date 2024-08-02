@@ -15,11 +15,13 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-row justify-center items-center">
+    <div className="flex flex-col justify-center items-center min-h-screen">
       <Search onSelect={handleSelectComponent} />
-      <div className="min-h-screen flex flex-row flex-wrap space-x-4">
+      <div className="flex flex-wrap justify-center items-start mt-4 mx-auto">
         {selectedComponents.map((componentName, index) => (
-          <DynamicComponentLoader key={index} componentName={componentName} />
+          <div key={index} className="p-2">
+            <DynamicComponentLoader componentName={componentName} />
+          </div>
         ))}
       </div>
     </div>
