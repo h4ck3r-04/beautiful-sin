@@ -28,10 +28,12 @@ export function Search({ onSelect }: SearchProps) {
     if ((event.ctrlKey || event.metaKey) && event.key === "k") {
       event.preventDefault();
       setIsCommandOpen((prev) => !prev);
+      setSearchQuery("");
     }
     if (event.key === "Escape") {
       event.preventDefault();
       setIsCommandOpen(false);
+      setSearchQuery("");
     }
   };
 
